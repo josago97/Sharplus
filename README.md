@@ -1,2 +1,2 @@
 # Sharplus
- A library with things that would come in handy in C#
+ A library with things that would come in handy for C#
