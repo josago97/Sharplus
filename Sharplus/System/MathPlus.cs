@@ -6,6 +6,8 @@ namespace System
     {
         public static double Clamp(double value, double min, double max)
         {
+            if (max < min) throw new ArgumentException("Max must be greater than Min");
+
             double result;
 
             if (value < min) result = min;
@@ -17,6 +19,8 @@ namespace System
 
         public static decimal Clamp(decimal value, decimal min, decimal max)
         {
+            if (max < min) throw new ArgumentException("Max must be greater than Min");
+
             decimal result;
 
             if (value < min) result = min;
@@ -24,26 +28,6 @@ namespace System
             else result = value;
 
             return result;
-        }
-
-        public static double Lerp(double a, double b, double t)
-        {
-            return LerpUncampled(a, b, Clamp(0, 1, t));
-        }
-
-        public static decimal Lerp(decimal a, decimal b, decimal t)
-        {
-            return LerpUncampled(a, b, Clamp(0, 1, t));
-        }
-
-        public static double LerpUncampled(double a, double b, double t)
-        {
-            return a + (b - a) * t;
-        }
-
-        public static decimal LerpUncampled(decimal a, decimal b, decimal t)
-        {
-            return a + (b - a) * t;
         }
 
         public static double InverseLerp(double a, double b, double value)
@@ -54,6 +38,26 @@ namespace System
         public static decimal InverseLerp(decimal a, decimal b, decimal value)
         {
             return a != b ? Clamp((value - a) / (b - a), 0, 1) : 0m;
+        }
+
+        public static double Lerp(double a, double b, double t)
+        {
+            return LerpUncampled(a, b, Clamp(t, 0, 1));
+        }
+
+        public static decimal Lerp(decimal a, decimal b, decimal t)
+        {
+            return LerpUncampled(a, b, Clamp(t, 0, 1));
+        }
+
+        public static double LerpUncampled(double a, double b, double t)
+        {
+            return a + (b - a) * t;
+        }
+
+        public static decimal LerpUncampled(decimal a, decimal b, decimal t)
+        {
+            return a + (b - a) * t;
         }
 
         public static int Max(params int[] values) => values.Max();
@@ -68,17 +72,66 @@ namespace System
         public static double Min(params double[] values) => values.Min();
         public static decimal Min(params decimal[] values) => values.Min();
 
-        public static double Mod(double dividend, double divider)
+        public static int Mod(int dividend, int divider)
         {
-            return dividend - (divider * ((long)dividend / (long)divider));
+            if (divider <= 0) throw new ArgumentException("Divider can not be less or equal zero");
+
+            var remainder = dividend % divider;
+            if (remainder < 0) remainder += divider;
+
+            return remainder;
         }
 
-        public static double GreatestCommonDivisor(long a, long b)
+        public static long Mod(long dividend, long divider)
         {
-            double gcd = 0;
+            if (divider <= 0) throw new ArgumentException("Divider can not be less or equal zero");
 
+            var remainder = dividend % divider;
+            if (remainder < 0) remainder += divider;
+
+            return remainder;
+        }
+
+        public static int GreatestCommonDivisor(params int[] values)
+        {
+            long gcd = 1;
+
+            if (values.Length > 0)
+            {
+                gcd = values[0];
+
+                for (int i = 1; i < values.Length; i++)
+                {
+                    gcd = CalculateGreatestCommonDivisor(gcd, values[i]);
+                }
+            }
+
+            return (int)gcd;
+        }
+
+        public static long GreatestCommonDivisor(params long[] values)
+        {
+            long gcd = 1;
+
+            if (values.Length > 0)
+            {
+                gcd = values[0];
+
+                for (int i = 1; i < values.Length; i++)
+                {
+                    gcd = CalculateGreatestCommonDivisor(gcd, values[i]);
+                }
+            }
+
+            return gcd;
+        }
+
+        private static long CalculateGreatestCommonDivisor(long a, long b)
+        {
             a = Math.Abs(a);
             b = Math.Abs(b);
+
+            long gcd = Math.Max(a, b);
 
             if (Math.Min(a, b) != 0)
             {
@@ -88,33 +141,9 @@ namespace System
             return gcd;
         }
 
-        public static double GreatestCommonDivisor(params long[] values)
+        public static int LessCommonMultiple(params int[] values)
         {
-            double gcd = 0;
-
-            if (values.Length > 0)
-            {
-                gcd = values[0];
-
-                for (int i = 1; i < values.Length; i++)
-                {
-                    gcd = GreatestCommonDivisor((long)gcd, values[i]);
-                }
-            }
-
-            return gcd;
-        }
-
-        public static double LessCommonMultiple(long a, long b)
-        {
-            double gcd = GreatestCommonDivisor(a, b);
-            double lcm = gcd != 0 ? a * b / gcd : 0;
-            return lcm;
-        }
-
-        public static double LessCommonMultiple(params long[] values)
-        {
-            double lcm = 0;
+            long lcm = 0;
 
             if (values.Length > 0)
             {
@@ -122,10 +151,34 @@ namespace System
 
                 for (int i = 1; i < values.Length; i++)
                 {
-                    lcm = LessCommonMultiple((long)lcm, values[i]);
+                    lcm = CalculateLessCommonMultiple(lcm, values[i]);
                 }
             }
 
+            return (int)lcm;
+        }
+
+        public static double LessCommonMultiple(params long[] values)
+        {
+            long lcm = 0;
+
+            if (values.Length > 0)
+            {
+                lcm = values[0];
+
+                for (int i = 1; i < values.Length; i++)
+                {
+                    lcm = CalculateLessCommonMultiple(lcm, values[i]);
+                }
+            }
+
+            return lcm;
+        } 
+
+        private static long CalculateLessCommonMultiple(long a, long b)
+        {
+            long gcd = GreatestCommonDivisor(a, b);
+            long lcm = gcd != 0 ? a * b / gcd : 0;
             return lcm;
         }
     }

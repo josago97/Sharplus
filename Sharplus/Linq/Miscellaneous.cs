@@ -4,6 +4,12 @@ namespace System.Linq
 {
     public static class Miscellaneous
     {
+        public static string Dump<T>(this IEnumerable<T> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return $"[{string.Join(", ", source)}]";
+        }
+
         public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             if (source == null) throw Error.ArgumentNull("source");
@@ -65,12 +71,6 @@ namespace System.Linq
             HashSet<T> hashSet = new HashSet<T>(source1);
             hashSet.SymmetricExceptWith(source2);
             return hashSet;
-        }
-
-        public static string ToString<T>(this IEnumerable<T> source)
-        {
-            if (source == null) throw Error.ArgumentNull("source");
-            return $"[{string.Join(", ", source)}]";
         }
     }
 }
