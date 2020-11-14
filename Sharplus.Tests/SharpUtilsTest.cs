@@ -1,12 +1,11 @@
-﻿using System;
-using Xunit;
+﻿using Xunit;
 
 namespace Sharplus.Tests.System
 {
-    public class ObjectPlusTest
+    public class SharpUtilsTest
     {
         [Fact]
-        public void Swap()
+        public void SwapReferences()
         {
             int a = 0;
             int b = 1;
@@ -14,7 +13,7 @@ namespace Sharplus.Tests.System
             int auxA = a;
             int auxB = b;
 
-            ObjectPlus.Swap(ref auxA, ref auxB);
+            SharpUtils.SwapReferences(ref auxA, ref auxB);
 
             Assert.Equal(a, auxB);
             Assert.Equal(b, auxA);  

@@ -2,6 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Jose97</Authors>
+    <Company>Jose97</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>A library with things that would come in handy</Description>
+    <PackageTags>Thing, Things, Utils</PackageTags>
+    <RepositoryType></RepositoryType>
+    <RepositoryUrl>https://github.com/josago97/Sharplus</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
