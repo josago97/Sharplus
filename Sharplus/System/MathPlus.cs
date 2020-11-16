@@ -30,6 +30,22 @@ namespace System
             return result;
         }
 
+        public static bool IsInRange(double value, double expected, double errorRange)
+        {
+            errorRange = Math.Abs(errorRange);
+            double error = AbsoluteError(expected, value);
+
+            return -errorRange <= error && error <= errorRange; 
+        }
+
+        public static bool IsInRange(decimal value, decimal expected, decimal errorRange)
+        {
+            errorRange = Math.Abs(errorRange);
+            decimal error = AbsoluteError(expected, value);
+
+            return -errorRange <= error && error <= errorRange;
+        }
+
         public static double InverseLerp(double a, double b, double value)
         {
             return a != b ? Clamp((value - a) / (b - a), 0, 1) : 0f;
@@ -180,6 +196,26 @@ namespace System
             long gcd = GreatestCommonDivisor(a, b);
             long lcm = gcd != 0 ? a * b / gcd : 0;
             return lcm;
+        }
+
+        public static double AbsoluteError(double realValue, double inferredValue)
+        {
+            return inferredValue - realValue;
+        }
+
+        public static decimal AbsoluteError(decimal realValue, decimal inferredValue)
+        {
+            return inferredValue - realValue;
+        }
+
+        public static double RelativeError(double realValue, double inferredValue)
+        {
+            return AbsoluteError(realValue, inferredValue) / realValue;
+        }
+
+        public static decimal RelativeError(decimal realValue, decimal inferredValue)
+        {
+            return AbsoluteError(realValue, inferredValue) / realValue;
         }
     }
 }

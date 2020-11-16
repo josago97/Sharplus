@@ -48,6 +48,46 @@ namespace System.Linq
 
         #endregion
 
+        #region Kurtosis
+
+        public static double Kurtosis(this IEnumerable<int> source, bool isNormal = true)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+        }
+
+        public static double Kurtosis(this IEnumerable<long> source, bool isNormal = true)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+        }
+
+        public static double Kurtosis(this IEnumerable<float> source, bool isNormal = true)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+        }
+
+        public static double Kurtosis(this IEnumerable<double> source, bool isNormal = true)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateKurtosis(source.ToArray(), isNormal);
+        }
+
+        private static double CalculateKurtosis(double[] values, bool isNormal)
+        {
+            double average = values.Average();
+            double variance = CalculateVariance(values, false);
+            double fourthMoment = values.Average(x => Math.Pow(x - average, 4));
+
+            double result = fourthMoment / Math.Pow(variance, 2); // Math.Pow(variance, 2) is equals Math.Pow(standardDeviation, 4)
+            if (isNormal) result -= 3;
+
+            return result;
+        }
+
+        #endregion
+
         #region Mode
 
         public static IEnumerable<T> Mode<T>(this IEnumerable<T> source)
@@ -94,6 +134,45 @@ namespace System.Linq
         }
 
         #endregion
+
+        #region Skewness
+
+        public static double Skewness(this IEnumerable<int> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateSkewness(source.Cast<double>().ToArray());
+        }
+
+        public static double Skewness(this IEnumerable<long> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateSkewness(source.Cast<double>().ToArray());
+        }
+
+        public static double Skewness(this IEnumerable<float> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateSkewness(source.Cast<double>().ToArray());
+        }
+
+        public static double Skewness(this IEnumerable<double> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            return CalculateSkewness(source.ToArray());
+        }
+
+        private static double CalculateSkewness(double[] values)
+        {
+            double average = values.Average();
+            double variance = CalculateVariance(values, false);
+            double thirdMoment = values.Average(x => Math.Pow(x - average, 3));
+
+            double result = thirdMoment / Math.Pow(variance, 1.5); // Math.Pow(variance, 1.5) is equals Math.Pow(standardDeviation, 3)
+
+            return result;
+        }
+
+        #endregion 
 
         #region Standard deviation
 
@@ -160,7 +239,7 @@ namespace System.Linq
             if (values.Length == 0) throw Error.NoElements();
 
             double average = values.Average();
-            double sum = values.Sum(x => checked(Math.Pow(x - average, 2)));
+            double sum = values.Sum(x => Math.Pow(x - average, 2));
 
             if (isSample)
             {

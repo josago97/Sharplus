@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Xunit;
 
@@ -6,6 +5,17 @@ namespace Sharplus.Tests.Linq
 {
     public class MiscellaneousTest
     {
+        [Theory]
+        [InlineData(new int[] { 1, 2 }, new int[] { 1, 2 })]
+        [InlineData(new int[] { 1, 2 }, new int[] { })]
+        public void Concat(int[] collection1, int[] collection2)
+        {
+            int expected = collection1.Length + 2 * collection2.Length;
+            int result = collection1.Concat(collection2, collection2).Count();
+
+            Assert.Equal(expected, result);
+        }
+
         [Fact]
         public void Dump()
         {

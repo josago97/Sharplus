@@ -1,9 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace System.Linq
 {
     public static class Miscellaneous
     {
+        public static IEnumerable<T> Concat<T>(this IEnumerable<T> source, params IEnumerable<T>[] collections)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            if (collections.Any(c => c == null)) throw Error.ArgumentNull("A collection is null");
+
+            foreach (var item in source) yield return item;
+            foreach (var collection in collections) foreach (var item in collection) yield return item;
+        }
+
         public static string Dump<T>(this IEnumerable<T> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
