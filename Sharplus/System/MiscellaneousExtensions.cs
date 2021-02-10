@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
-namespace Sharplus.System
+namespace System
 {
     public static class MiscellaneousExtensions
     {
