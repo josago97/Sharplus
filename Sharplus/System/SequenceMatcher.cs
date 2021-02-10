@@ -30,7 +30,7 @@ namespace System
         public double NormalizedLevenshtein()
         {
             int maxLength = Math.Max(_sequence1.Length, _sequence2.Length);
-            double result = Levenshtein() / maxLength;
+            double result = 1 - (Levenshtein() / maxLength);
 
             return result;
         }
