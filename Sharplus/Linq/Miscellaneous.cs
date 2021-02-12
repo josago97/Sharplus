@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sharplus.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace System.Linq
@@ -73,7 +74,7 @@ namespace System.Linq
             if (source == null) throw Error.ArgumentNull("source");
             if (selector == null) throw Error.ArgumentNull("selector");
 
-            comparer = comparer ?? Comparer<TKey>.Default;
+            if (comparer == null) comparer = Comparer<TKey>.Default;
             var elements = new List<TSource>();
 
             using (var iterator = source.GetEnumerator())

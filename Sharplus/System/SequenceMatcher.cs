@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace System
 {
@@ -8,13 +7,13 @@ namespace System
     {
         private T[] _sequence1;
         private G[] _sequence2;
-        private Func<T, G, bool> _equalsFunc;
+        private Func<T, G, bool> _equals;
 
         public SequenceMatcher(IEnumerable<T> sequence1, IEnumerable<G> sequence2, Func<T, G, bool> equals)
         {
             _sequence1 = sequence1.ToArray();
             _sequence2 = sequence2.ToArray();
-            _equalsFunc = equals;
+            _equals = equals;
         }
 
         public SequenceMatcher(IEnumerable<T> sequence1, IEnumerable<G> sequence2) 
@@ -22,126 +21,91 @@ namespace System
         {
         }
 
-        public double Levenshtein()
+        #region Levenshtein
+
+        public double DistanceLevenshtein()
         {
             return CalculateLevenshtein(_sequence1, _sequence2);
         }
 
-        public double NormalizedLevenshtein()
+        public double DistanceNormalizedLevenshtein()
         {
             int maxLength = Math.Max(_sequence1.Length, _sequence2.Length);
-            double result = 1 - (Levenshtein() / maxLength);
+            return DistanceLevenshtein() / maxLength;
+        }
 
-            return result;
+        public double SimilarityNormalizedLevenshtein()
+        {
+            return 1 - DistanceNormalizedLevenshtein();
         }
 
         private double CalculateLevenshtein(T[] sequence1, G[] sequence2)
         {
-            double result;
+            int[,] d = new int[sequence1.Length + 1, sequence2.Length + 1];
 
-            if (sequence1.Length == 0) result = sequence2.Length;
-            else if (sequence2.Length == 0) result = sequence1.Length;
-            else
+            for (int i = 0; i < d.GetLength(0); i++) d[i, 0] = i;
+            for (int j = 0; j < d.GetLength(1); j++) d[0, j] = j;
+
+            for (int i = 1; i < d.GetLength(0); i++)
             {
-                T[] tailSequence1 = sequence1.Skip(1).ToArray();
-                G[] tailSequence2 = sequence2.Skip(1).ToArray();
-
-                if (_equalsFunc(sequence1[0], sequence2[0]))
+                for (int j = 1; j < d.GetLength(1); j++)
                 {
-                    result = CalculateLevenshtein(tailSequence1, tailSequence2);
-                }
-                else
-                {
-                    double rts1s2 = CalculateLevenshtein(tailSequence1, sequence2);
-                    double rs1st2 = CalculateLevenshtein(sequence1, tailSequence2);
-                    double rts1st2 = CalculateLevenshtein(tailSequence1, tailSequence2);
+                    int cost = _equals(sequence1[i - 1], sequence2[j - 1]) ? 0 : 1;
 
-                    double min = MathPlus.Min(rts1s2, rs1st2, rts1st2);
-
-                    result = 1 + min;
+                    d[i, j] = MathPlus.Min(
+                        d[i - 1, j] + 1,  // Deletion
+                        d[i, j - 1] + 1, // Insertion
+                        d[i - 1, j - 1] + cost // Substitution
+                        );
                 }
             }
 
-            return result;
+            return d[sequence1.Length, sequence2.Length];
         }
 
-        /*public double DamerauLevenshtein()
+        #endregion
+
+        #region Damerau
+
+        public double DistanceDamerau()
         {
-            return CalculateDamerauLevenshtein(_sequence1, _sequence2);
+            return CalculateDamerau(_sequence1, _sequence2);
         }
-        
-        private double CalculateDamerauLevenshtein(T[] sequence1, G[] sequence2)
+
+        private double CalculateDamerau(T[] sequence1, G[] sequence2)
         {
-            double result;
+            int[,] d = new int[sequence1.Length + 1, sequence2.Length + 1];
 
-            if (s1.Equals(s2))
+            for (int i = 0; i < d.GetLength(0); i++) d[i, 0] = i;
+            for (int j = 0; j < d.GetLength(1); j++) d[0, j] = j;
+
+            for (int i = 1; i < d.GetLength(0); i++)
             {
-                return 0;
-            }
-
-            // Infinite distance is the max possible distance
-            int inf = int.MaxValue;
-
-            // Create and initialize the character array indices
-            var da = new Dictionary<char, int>();
-
-            for (int d = 0; d < s1.Length; d++)
-            {
-                da[s1[d]] = 0;
-            }
-
-            for (int d = 0; d < s2.Length; d++)
-            {
-                da[s2[d]] = 0;
-            }
-
-            // Create the distance matrix H[0 .. s1.length+1][0 .. s2.length+1]
-            int[,] h = new int[sequence1.Length + 2, sequence2.Length + 2];
-
-            // Initialize the left and top edges of H
-            for (int i = 0; i <= s1.Length; i++)
-            {
-                h[i + 1, 0] = inf;
-                h[i + 1, 1] = i;
-            }
-
-            for (int j = 0; j <= s2.Length; j++)
-            {
-                h[0, j + 1] = inf;
-                h[1, j + 1] = j;
-            }
-
-            // Fill in the distance matrix H
-            // Look at each character in s1
-            for (int i = 1; i <= s1.Length; i++)
-            {
-                int db = 0;
-
-                // Look at each character in b
-                for (int j = 1; j <= s2.Length; j++)
+                for (int j = 1; j < d.GetLength(1); j++)
                 {
-                    int i1 = da[s2[j - 1]];
-                    int j1 = db;
+                    int cost = _equals(sequence1[i - 1], sequence2[j - 1]) ? 0 : 1;
 
-                    int cost = 1;
-                    if (s1[i - 1] == s2[j - 1])
+                    d[i, j] = MathPlus.Min(
+                        d[i - 1, j] + 1,  // Deletion
+                        d[i, j - 1] + 1, // Insertion
+                        d[i - 1, j - 1] + cost // Substitution
+                        );
+
+                    if (i > 1 && j > 1
+                        && _equals(sequence1[i - 1], sequence2[j - 2])
+                        && _equals(sequence1[i - 2], sequence2[j - 1]))
                     {
-                        cost = 0;
-                        db = j;
+                        d[i, j] = Math.Min(
+                            d[i, j],
+                            d[i - 2, j - 2] + 1 //Transposition
+                        );
                     }
-
-                    h[i + 1, j + 1] = MathPlus.Min(
-                        h[i, j] + cost,  // Substitution
-                        h[i + 1, j] + 1, // Insertion
-                        h[i, j + 1] + 1, // Deletion
-                        h[i1, j1] + (i - i1 - 1) + 1 + (j - j1 - 1)
-                    );
                 }
-
-                da[s1[i - 1]] = i;
             }
 
-            return h[s1.Length + 1, s2.Length + 1];
-        }*/
+            return d[sequence1.Length, sequence2.Length];
+        }
+
+        #endregion
     }
 }

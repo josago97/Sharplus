@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Sharplus.Linq;
+using System.Collections.Generic;
 
 namespace System.Linq
 {

@@ -1,4 +1,6 @@
-﻿namespace System.Linq
+﻿using System;
+
+namespace Sharplus.Linq
 {
     internal static class Error
     {
