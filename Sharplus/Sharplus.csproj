@@ -10,6 +10,7 @@
     <PackageTags>Thing, Things, Utils</PackageTags>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/josago97/Sharplus</RepositoryUrl>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
