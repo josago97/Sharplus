@@ -1,11 +1,11 @@
-﻿using Sharplus.Linq;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Sharplus.Linq;
 
 namespace System.Linq
 {
     public static class Miscellaneous
-    {
+    {     
+
         public static IEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> source, params IEnumerable<TSource>[] collections)
         {
             if (source == null) throw Error.ArgumentNull("source");
@@ -19,6 +19,31 @@ namespace System.Linq
         {
             if (source == null) throw Error.ArgumentNull("source");
             return $"[{string.Join(", ", source)}]";
+        }
+
+        public static bool Equals<TSource1, TSource2>(this IEnumerable<TSource1> source1, IEnumerable<TSource2> source2, Func<TSource1, TSource2, bool> equals)
+        {
+            if (source1 == null) throw Error.ArgumentNull("source1");
+            if (source2 == null) throw Error.ArgumentNull("source2");
+            if (equals == null) throw Error.ArgumentNull("equals");
+
+            TSource1[] array1 = source1.ToArray();
+            TSource2[] array2 = source2.ToArray();
+            bool result = array1.Length == array2.Length;
+
+            if (result)
+            {
+                for (int i = 0; i < array1.Length; i++)
+                {
+                    if (!equals(array1[i], array2[i]))
+                    {
+                        result = false;
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
@@ -156,6 +181,18 @@ namespace System.Linq
             }
 
             return elements;
+        }
+
+        public static IEnumerable<TSource> SubCollection<TSource>(this IEnumerable<TSource> source, int startIndex)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+
+            return source.Skip(startIndex);
+        }
+
+        public static IEnumerable<TSource> SubCollection<TSource>(this IEnumerable<TSource> source, int startIndex, int length)
+        {
+            return source.SubCollection(startIndex).Take(length);
         }
 
         public static IEnumerable<TSource> Suffle<TSource>(this IEnumerable<TSource> source)

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -5,6 +7,7 @@ namespace Sharplus.Tests.Linq
 {
     public class MiscellaneousTest
     {
+
         [Theory]
         [InlineData(new int[] { 1, 2 }, new int[] { 1, 2 })]
         [InlineData(new int[] { 1, 2 }, new int[] { })]
@@ -12,6 +15,23 @@ namespace Sharplus.Tests.Linq
         {
             int expected = collection1.Length + 2 * collection2.Length;
             int result = collection1.Concat(collection2, collection2).Count();
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData(true, new int[] { }, new long[] { }, true)]
+        [InlineData(true, new int[] { 1 }, new long[] { 1 }, false)]
+        [InlineData(false, new int[] { 1 }, new long[] { 1 }, true)]
+        [InlineData(false, new int[] { 1 }, new long[] { 2 }, true)]
+        [InlineData(false, new int[] { 1 }, new long[] { 1, 2 }, true)]
+        public void TestEquals(bool expected, IEnumerable<int> collection1, IEnumerable<long> collection2, bool useEquals)
+        {
+            Func<int, long, bool> objectEquals = (o1, o2) => o1.Equals(o2);
+            Func<int, long, bool> operatorEquals = (o1, o2) => o1 == o2;
+            Func<int, long, bool> equals = useEquals ? objectEquals : operatorEquals;
+
+            bool result = collection1.Equals(collection2, equals);
 
             Assert.Equal(expected, result);
         }
@@ -58,6 +78,23 @@ namespace Sharplus.Tests.Linq
             int[] items = new[] { 0, 1, 2, 3 };
             string expected = $"[{string.Join(", ", items)}]";
             Assert.True(expected == items.Dump());
+        }
+
+
+        [Theory]
+        [InlineData(0, new int[] { }, 0, 0)]
+        [InlineData(0, new int[] { }, 1, 2)]
+        [InlineData(1, new int[] { 1 }, 0, 1)]
+        [InlineData(1, new int[] { 1 }, 0, 2)]
+        [InlineData(0, new int[] { 1 }, 0, 0)]
+        [InlineData(0, new int[] { 1 }, 1, 0)]
+        [InlineData(0, new int[] { 1 }, 1, 2)]
+        [InlineData(1, new int[] { 1, 1 }, 0, 1)]
+        public void SubCollection(int lengthExpected, int[] values, int startIndex, int length)
+        {
+            var result = values.SubCollection(startIndex, length).Count();
+
+            Assert.Equal(lengthExpected, result);
         }
 
         [Fact]

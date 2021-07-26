@@ -30,7 +30,7 @@ namespace System
             return result;
         }
 
-        public static bool IsInRange(double value, double expected, double errorRange)
+        public static bool IsInRange(double value, double expected, double errorRange = 0)
         {
             errorRange = Math.Abs(errorRange);
             double error = AbsoluteError(expected, value);
@@ -38,7 +38,7 @@ namespace System
             return -errorRange <= error && error <= errorRange; 
         }
 
-        public static bool IsInRange(decimal value, decimal expected, decimal errorRange)
+        public static bool IsInRange(decimal value, decimal expected, decimal errorRange = 0)
         {
             errorRange = Math.Abs(errorRange);
             decimal error = AbsoluteError(expected, value);

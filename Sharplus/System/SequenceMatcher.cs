@@ -23,28 +23,25 @@ namespace System
 
         #region Levenshtein
 
-        public double DistanceLevenshtein()
+        public double LevenshteinDistance()
         {
             return CalculateLevenshtein(_sequence1, _sequence2);
         }
 
-        public double DistanceNormalizedLevenshtein()
+        public double LevenshteinNormalizedDistance()
         {
             int maxLength = Math.Max(_sequence1.Length, _sequence2.Length);
-            return DistanceLevenshtein() / maxLength;
+            return LevenshteinDistance() / maxLength;
         }
 
-        public double SimilarityNormalizedLevenshtein()
+        public double LevenshteinNormalizedSimilarity()
         {
-            return 1 - DistanceNormalizedLevenshtein();
+            return 1 - LevenshteinNormalizedDistance();
         }
 
         private double CalculateLevenshtein(T[] sequence1, G[] sequence2)
         {
             int[,] d = new int[sequence1.Length + 1, sequence2.Length + 1];
-
-            for (int i = 0; i < d.GetLength(0); i++) d[i, 0] = i;
-            for (int j = 0; j < d.GetLength(1); j++) d[0, j] = j;
 
             for (int i = 1; i < d.GetLength(0); i++)
             {
@@ -67,7 +64,7 @@ namespace System
 
         #region Damerau
 
-        public double DistanceDamerau()
+        public double DamerauDistance()
         {
             return CalculateDamerau(_sequence1, _sequence2);
         }
@@ -75,9 +72,6 @@ namespace System
         private double CalculateDamerau(T[] sequence1, G[] sequence2)
         {
             int[,] d = new int[sequence1.Length + 1, sequence2.Length + 1];
-
-            for (int i = 0; i < d.GetLength(0); i++) d[i, 0] = i;
-            for (int j = 0; j < d.GetLength(1); j++) d[0, j] = j;
 
             for (int i = 1; i < d.GetLength(0); i++)
             {
@@ -104,6 +98,40 @@ namespace System
             }
 
             return d[sequence1.Length, sequence2.Length];
+        }
+
+        #endregion
+
+        #region Longest Common Subsequence
+
+        public double LongestCommonSubsequenceDistance()
+        {
+            return CalculateLongestCommonSubsequence(_sequence1, _sequence2);
+        }
+
+        public double CalculateLongestCommonSubsequence(T[] sequence1, G[] sequence2)
+        {
+            int length1 = sequence1.Length;
+            int length2 = sequence2.Length;
+
+            int[,] d = new int[length1 + 1, length2 + 1];
+
+            for (int i = 1; i < d.GetLength(0); i++)
+            {
+                for (int j = 1; j < d.GetLength(1); j++)
+                {
+                    if (_equals(sequence1[i - 1], sequence2[j - 1]))
+                    {
+                        d[i, j] = d[i - 1, j - 1] + 1;
+                    }
+                    else
+                    {
+                        d[i, j] = Math.Max(d[i, j - 1], d[i - 1, j]);
+                    }
+                }
+            }
+
+            return length1 + length2 - 2 * d[length1, length2];
         }
 
         #endregion

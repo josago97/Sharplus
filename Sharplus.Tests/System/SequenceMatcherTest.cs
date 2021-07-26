@@ -17,7 +17,7 @@ namespace Sharplus.Tests.System
         public void DistanceLevenshtein(int expected, IEnumerable<char> sequence1, IEnumerable<char> sequence2)
         {
             var matcher = new SequenceMatcher<char, char>(sequence1, sequence2);
-            Assert.Equal(expected, matcher.DistanceLevenshtein());
+            Assert.Equal(expected, matcher.LevenshteinDistance());
         }
 
         [Theory]
@@ -28,7 +28,7 @@ namespace Sharplus.Tests.System
         public void DistanceNormalizedLevenshtein(double expected, IEnumerable<char> sequence1, IEnumerable<char> sequence2)
         {
             var matcher = new SequenceMatcher<char, char>(sequence1, sequence2);
-            Assert.Equal(expected, matcher.DistanceNormalizedLevenshtein());
+            Assert.Equal(expected, matcher.LevenshteinNormalizedDistance());
         }
 
         [Theory]
@@ -39,7 +39,7 @@ namespace Sharplus.Tests.System
         public void SimilarityNormalizedLevenshtein(double expected, IEnumerable<char> sequence1, IEnumerable<char> sequence2)
         {
             var matcher = new SequenceMatcher<char, char>(sequence1, sequence2);
-            Assert.Equal(expected, matcher.SimilarityNormalizedLevenshtein());
+            Assert.Equal(expected, matcher.LevenshteinNormalizedSimilarity());
         }
 
         #endregion
@@ -54,7 +54,22 @@ namespace Sharplus.Tests.System
         public void DistanceDamerau(int expected, IEnumerable<char> sequence1, IEnumerable<char> sequence2)
         {
             var matcher = new SequenceMatcher<char, char>(sequence1, sequence2);
-            Assert.Equal(expected, matcher.DistanceDamerau());
+            Assert.Equal(expected, matcher.DamerauDistance());
+        }
+
+        #endregion
+
+        #region Longest Common Subsequence
+
+        [Theory]
+        [InlineData(0, "test", "test")]
+        [InlineData(2, "test", "estt")]
+        [InlineData(1, "test", "est")]
+        [InlineData(3, "test", "restt")]
+        public void DistanceLongestCommonSubsequence(int expected, IEnumerable<char> sequence1, IEnumerable<char> sequence2)
+        {
+            var matcher = new SequenceMatcher<char, char>(sequence1, sequence2, (c1, c2) => c1 == c2);
+            Assert.Equal(expected, matcher.LongestCommonSubsequenceDistance());
         }
 
         #endregion

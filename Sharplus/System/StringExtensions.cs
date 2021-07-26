@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
+using System.Threading;
 
 namespace System
 {
@@ -52,6 +54,31 @@ namespace System
             }
 
             return parsed;
+        }
+
+        public static string ToTitleCase(this string text, bool onlyFirst = true)
+        {
+            string result = string.Empty;
+
+            if (text.Length > 0)
+            {
+                if (onlyFirst)
+                {
+                    string aux = text.ToLowerInvariant();
+                    result = char.ToUpper(aux[0]) + aux.Substring(1);
+                }
+                else
+                {
+                    result = text.ToTitleCase(Thread.CurrentThread.CurrentCulture);
+                }
+            }
+
+            return result;
+        }
+
+        public static string ToTitleCase(this string text, CultureInfo cultureInfo)
+        {
+            return cultureInfo.TextInfo.ToTitleCase(text.ToLower());
         }
     }
 }
