@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using Sharplus;
 using Xunit;
 
 namespace Sharplus.Tests.System
@@ -15,6 +13,25 @@ namespace Sharplus.Tests.System
         public void Clamp(double expected, double value, double min, double max)
         {
             Assert.Equal(expected, MathPlus.Clamp(value, min, max));
+        }
+
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        [InlineData(5 * 4 * 3 * 2, 5)]
+        public void Factorial(long expected, long value)
+        {
+            Assert.Equal(expected, MathPlus.Factorial(value));
+        }
+
+        [Theory]
+        [InlineData(new long[] { 0 }, 0)]
+        [InlineData(new long[] { 0, 1 }, 1)]
+        [InlineData(new long[] { 0, 1, 1, 2, 3, 5 }, 5)]
+        public void Fibonacci(IEnumerable<long> expected, int value)
+        {
+            Assert.Equal(expected, MathPlus.Fibonacci(value));
         }
 
         [Theory]
@@ -46,10 +63,10 @@ namespace Sharplus.Tests.System
         }
 
         [Theory]
-        [InlineData(0, new [] { 0 })]
-        [InlineData(2, new [] { 0, 2 })]
-        [InlineData(1, new [] { 2, 6, 9, 10 })]
-        [InlineData(2, new [] { 2, 6, 8, 10 })]
+        [InlineData(0, new[] { 0 })]
+        [InlineData(2, new[] { 0, 2 })]
+        [InlineData(1, new[] { 2, 6, 9, 10 })]
+        [InlineData(2, new[] { 2, 6, 8, 10 })]
         public void GreatestCommonDivisor(int expected, int[] values)
         {
             Assert.Equal(expected, MathPlus.GreatestCommonDivisor(values));

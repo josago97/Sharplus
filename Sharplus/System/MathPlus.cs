@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace System
 {
@@ -28,6 +29,43 @@ namespace System
             else result = value;
 
             return result;
+        }
+
+        public static long Factorial(long value)
+        {
+            long result;
+
+            if (value < 0) throw new ArgumentException("Value cannot be negative");
+
+            if (value == 0 || value == 1)
+                result =  1;
+            else
+                result = value * Factorial(value - 1);
+
+            return result;
+        }
+
+        public static IEnumerable<long> Fibonacci(int value)
+        {
+            if (value < 0) throw new ArgumentException("Value cannot be negative");
+
+            int f0 = 0;
+            int f1 = 1;
+            int fn1 = f1;
+            int fn2 = f0;
+
+            yield return f0;
+
+            if (value > 0) yield return f1;
+
+            for (int i = 1; i < value; i++)
+            {
+                int fn = fn1 + fn2;
+                fn2 = fn1;
+                fn1 = fn;
+
+                yield return fn;
+            }
         }
 
         public static bool IsInRange(double value, double expected, double errorRange = 0)
