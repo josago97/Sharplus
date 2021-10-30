@@ -10,19 +10,19 @@ namespace System.Linq
         public static double Median(this IEnumerable<int> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateMedian(source.Cast<double>().ToArray());
+            return CalculateMedian(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Median(this IEnumerable<long> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateMedian(source.Cast<double>().ToArray());
+            return CalculateMedian(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Median(this IEnumerable<float> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateMedian(source.Cast<double>().ToArray());
+            return CalculateMedian(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Median(this IEnumerable<double> source)
@@ -54,19 +54,19 @@ namespace System.Linq
         public static double Kurtosis(this IEnumerable<int> source, bool isNormal = true)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+            return CalculateKurtosis(source.Select(Convert.ToDouble).ToArray(), isNormal);
         }
 
         public static double Kurtosis(this IEnumerable<long> source, bool isNormal = true)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+            return CalculateKurtosis(source.Select(Convert.ToDouble).ToArray(), isNormal);
         }
 
         public static double Kurtosis(this IEnumerable<float> source, bool isNormal = true)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateKurtosis(source.Cast<double>().ToArray(), isNormal);
+            return CalculateKurtosis(source.Select(Convert.ToDouble).ToArray(), isNormal);
         }
 
         public static double Kurtosis(this IEnumerable<double> source, bool isNormal = true)
@@ -141,19 +141,19 @@ namespace System.Linq
         public static double Skewness(this IEnumerable<int> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateSkewness(source.Cast<double>().ToArray());
+            return CalculateSkewness(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Skewness(this IEnumerable<long> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateSkewness(source.Cast<double>().ToArray());
+            return CalculateSkewness(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Skewness(this IEnumerable<float> source)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateSkewness(source.Cast<double>().ToArray());
+            return CalculateSkewness(source.Select(Convert.ToDouble).ToArray());
         }
 
         public static double Skewness(this IEnumerable<double> source)
@@ -180,19 +180,19 @@ namespace System.Linq
         public static double StandardDeviation(this IEnumerable<int> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateStandardDeviation(source.Cast<double>().ToArray(), isSample);
+            return CalculateStandardDeviation(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double StandardDeviation(this IEnumerable<long> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateStandardDeviation(source.Cast<double>().ToArray(), isSample);
+            return CalculateStandardDeviation(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double StandardDeviation(this IEnumerable<float> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateStandardDeviation(source.Cast<double>().ToArray(), isSample);
+            return CalculateStandardDeviation(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double StandardDeviation(this IEnumerable<double> source, bool isSample = false)
@@ -214,19 +214,19 @@ namespace System.Linq
         public static double Variance(this IEnumerable<int> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateVariance(source.Cast<double>().ToArray(), isSample);
+            return CalculateVariance(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double Variance(this IEnumerable<long> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateVariance(source.Cast<double>().ToArray(), isSample);
+            return CalculateVariance(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double Variance(this IEnumerable<float> source, bool isSample = false)
         {
             if (source == null) throw Error.ArgumentNull("source");
-            return CalculateVariance(source.Cast<double>().ToArray(), isSample);
+            return CalculateVariance(source.Select(Convert.ToDouble).ToArray(), isSample);
         }
 
         public static double Variance(this IEnumerable<double> source, bool isSample = false)

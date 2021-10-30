@@ -9,6 +9,11 @@ namespace Sharplus.Linq
             return new ArgumentNullException($"Value cannot be null. (Parameter '{argumentName}')");
         }
 
+        public static Exception BadArguments(string message)
+        {
+            return new ArgumentException(message);
+        }
+
         public static Exception NoElements()
         {
             return new InvalidOperationException("Sequence contains no elements.");
