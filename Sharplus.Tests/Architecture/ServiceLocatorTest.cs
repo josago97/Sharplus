@@ -2,7 +2,7 @@
 using Sharplus.Architecture.Locator;
 using Xunit;
 
-namespace Sharplus.Tests.Architecture.Locator
+namespace Sharplus.Tests.Architecture
 {
     public class ServiceLocatorTest : IDisposable
     {

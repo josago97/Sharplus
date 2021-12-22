@@ -1,26 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
-using Sharplus.WebSockets;
 using Xunit;
+using Sharplus.WebSockets;
 
 namespace Sharplus.Tests.WebSockets
 {
     public class WebSocketsTests : IDisposable
     {
-        private static int Port = 12345;
+        private const int TIMEOUT = 5000; //milliseconds
 
         private WebSocketListener _server;
         private WebSocketClient _client;
 
-
         public WebSocketsTests()
         {
-            _server = new WebSocketListener(12345);
-            _client = new WebSocketClient($"ws://localhost:{Port}/");
+            int port = GetFreePort();
+            _server = new WebSocketListener(port);
+            _client = new WebSocketClient($"ws://localhost:{port}/");
+        }
 
-            Port++;
+        private int GetFreePort()
+        {
+            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            l.Start();
+            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            l.Stop();
+            return port;
         }
 
         public void Dispose()
@@ -52,10 +59,10 @@ namespace Sharplus.Tests.WebSockets
 
             Connect();
 
-            SpinWait.SpinUntil(() => socketListenerClient != null);
+            SpinWait.SpinUntil(() => socketListenerClient != null, TIMEOUT);
 
             await _client.SendAsync(text);
-            var message = await socketListenerClient.ReceiveAsync();
+            WebSocketMessage message = await socketListenerClient.ReceiveAsync();
 
             Assert.Equal(text, message.ContentString);
         }

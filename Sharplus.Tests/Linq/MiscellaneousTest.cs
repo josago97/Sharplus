@@ -12,62 +12,10 @@ namespace Sharplus.Tests.Linq
         [Theory]
         [InlineData(new int[] { 1, 2 }, new int[] { 1, 2 })]
         [InlineData(new int[] { 1, 2 }, new int[] { })]
-        public void Concat(int[] collection1, int[] collection2)
+        public void Concat(int[] sequence1, int[] sequence2)
         {
-            int expected = collection1.Length + 2 * collection2.Length;
-            int result = collection1.Concat(collection2, collection2).Count();
-
-            Assert.Equal(expected, result);
-        }
-
-        [Theory]
-        [MemberData(nameof(FlattenData))]
-        public void Flatten(IEnumerable expected, IEnumerable values, int depth)
-        {
-            Assert.Equal(expected, values.Flatten<object>(depth));
-        }
-
-        public static IEnumerable<object[]> FlattenData => new List<object[]>
-        {
-            new object[] { new int[] { 0, 1, 2, 3 }, new int[,] { { 0, 1 }, { 2, 3 } }, -1 },
-            new object[] { new int[] { 0, 1, 2, 3 }, new List<int[]> { new int[] { 0, 1 }, new int[] { 2, 3 } }, -1 },
-            new object[] { new object[] { 0, "hola", true, 3.0 }, new List<List<object[]>> { new List<object[]>() { new object[] { 0 }, new object[] { "hola" } }, new List<object[]>() { new object[] { true }, new object[] { 3.0 } } }, -1 },
-            new object[] { new int[,] { { 0, 1 }, { 2, 3 } }, new int[,] { { 0, 1 }, { 2, 3 } }, 0 },
-            new object[] { new int[] { 0, 1, 2, 3 }, new List<int[]> { new int[] { 0, 1 }, new int[] { 2, 3 } }, 1 },
-        };
-
-        [Theory]
-        [InlineData(5, new int[] { 1, 2, 3, 4, 5 })]
-        public void Max(int expected, int[] values)
-        {
-            int result = values.Max(x => x, Comparer<int>.Default);
-
-            Assert.Equal(expected, result);
-        }
-
-        [Theory]
-        [InlineData(new int[] { 5, 5 }, new int[] { 5, 1, 2, 3, 4, 5 })]
-        public void MaxAll(int[] expected, int[] values)
-        {
-            var result = values.MaxAll(x => x);
-
-            Assert.Equal(expected, result);
-        }
-
-        [Theory]
-        [InlineData(1, new int[] { 1, 2, 3, 4, 5 })]
-        public void Min(int expected, int[] values)
-        {
-            int result = values.Min(x => x, Comparer<int>.Default);
-
-            Assert.Equal(expected, result);
-        }
-
-        [Theory]
-        [InlineData(new int[] { 1, 1 }, new int[] { 1, 2, 3, 4, 5, 1 })]
-        public void MinByAll(int[] expected, int[] values)
-        {
-            var result = values.MinAll(x => x);
+            int expected = sequence1.Length + 2 * sequence2.Length;
+            int result = sequence1.Concat(sequence2, sequence2).Count();
 
             Assert.Equal(expected, result);
         }
@@ -80,19 +28,66 @@ namespace Sharplus.Tests.Linq
             Assert.True(expected == items.Dump());
         }
 
+        public static IEnumerable<object[]> FindAllIndexesData => new[]
+        {
+            new object[] { new int[] { }, new int[] { 0, 1 }, 0, -1, (int x) => x < 0 },
+            new object[] { new int[] { 0 }, new int[] { 0, 1 }, 0, -1, (int x) => x == 0 },
+            new object[] { new int[] { }, new int[] { 0, 1, 2 }, 1, -1, (int x) => x == 0 },
+            new object[] { new int[] { }, new int[] { 0, 1, 2 }, 0, 1, (int x) => x == 2 },
+            new object[] { new int[] { 0, 1 }, new int[] { 0, 1, 2 }, 0, -1, (int x) => x < 2 }
+        };
+
+        [Theory]
+        [MemberData(nameof(FindAllIndexesData))]
+        public void FindAllIndexes(int[] expected, int[] sequence, int startIndex, int count, Func<int, bool> match)
+        {
+            Assert.Equal(expected, sequence.FindAllIndexes(startIndex, count, match));
+        }
+
+        public static IEnumerable<object[]> FindIndexData => new[]
+        {
+            new object[] { -1, new int[] { 0, 1 }, 0, -1, (int x) => x < 0 },
+            new object[] { 0, new int[] { 0, 1 }, 0, -1, (int x) => x == 0 },
+            new object[] { -1, new int[] { 0, 1, 2 }, 1, -1, (int x) => x == 0 },
+            new object[] { -1, new int[] { 0, 1, 2 }, 0, 1, (int x) => x == 2 }
+        };
+
+        [Theory]
+        [MemberData(nameof(FindIndexData))]
+        public void FindIndex(int expected, int[] sequence, int startIndex, int count, Func<int, bool> match)
+        {
+            Assert.Equal(expected, sequence.FindIndex(startIndex, count, match));
+        }
+
+        public static IEnumerable<object[]> FlattenData => new []
+        {
+            new object[] { new int[] { 0, 1, 2, 3 }, new int[,] { { 0, 1 }, { 2, 3 } }, -1 },
+            new object[] { new int[] { 0, 1, 2, 3 }, new List<int[]> { new int[] { 0, 1 }, new int[] { 2, 3 } }, -1 },
+            new object[] { new object[] { 0, "hola", true, 3.0 }, new List<List<object[]>> { new List<object[]>() { new object[] { 0 }, new object[] { "hola" } }, new List<object[]>() { new object[] { true }, new object[] { 3.0 } } }, -1 },
+            new object[] { new int[,] { { 0, 1 }, { 2, 3 } }, new int[,] { { 0, 1 }, { 2, 3 } }, 0 },
+            new object[] { new int[] { 0, 1, 2, 3 }, new List<int[]> { new int[] { 0, 1 }, new int[] { 2, 3 } }, 1 },
+        };
+
+        [Theory]
+        [MemberData(nameof(FlattenData))]
+        public void Flatten(IEnumerable expected, IEnumerable values, int depth)
+        {
+            Assert.Equal(expected, values.Flatten<object>(depth));
+        }
+
         [Theory]
         [InlineData(true, new int[] { }, new long[] { }, true)]
         [InlineData(true, new int[] { 1 }, new long[] { 1 }, false)]
         [InlineData(false, new int[] { 1 }, new long[] { 1 }, true)]
         [InlineData(false, new int[] { 1 }, new long[] { 2 }, true)]
         [InlineData(false, new int[] { 1 }, new long[] { 1, 2 }, true)]
-        public void SequenceEqual(bool expected, IEnumerable<int> collection1, IEnumerable<long> collection2, bool useEquals)
+        public void SequenceEquals(bool expected, IEnumerable<int> sequence1, IEnumerable<long> sequence2, bool useEquals)
         {
             Func<int, long, bool> objectEquals = (o1, o2) => o1.Equals(o2);
             Func<int, long, bool> operatorEquals = (o1, o2) => o1 == o2;
             Func<int, long, bool> equals = useEquals ? objectEquals : operatorEquals;
 
-            bool result = collection1.SequenceEqual(collection2, equals);
+            bool result = sequence1.SequenceEquals(sequence2, equals);
 
             Assert.Equal(expected, result);
         }
@@ -106,9 +101,10 @@ namespace Sharplus.Tests.Linq
         [InlineData(0, new int[] { 1 }, 1, 0)]
         [InlineData(0, new int[] { 1 }, 1, 2)]
         [InlineData(1, new int[] { 1, 1 }, 0, 1)]
-        public void SubCollection(int lengthExpected, int[] values, int startIndex, int length)
+        [InlineData(2, new int[] { 1, 1 }, 0, -1)]
+        public void SubSequence(int lengthExpected, int[] values, int startIndex, int length)
         {
-            var result = values.SubCollection(startIndex, length).Count();
+            var result = values.SubSequence(startIndex, length).Count();
 
             Assert.Equal(lengthExpected, result);
         }

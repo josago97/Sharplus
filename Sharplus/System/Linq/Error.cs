@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sharplus.Linq
+namespace Sharplus.System.Linq
 {
     internal static class Error
     {

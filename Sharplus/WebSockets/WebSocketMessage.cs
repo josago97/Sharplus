@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
@@ -34,7 +33,7 @@ namespace Sharplus.WebSockets
                 result = JsonSerializer.Deserialize<T>(json);
                 success = true;
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
             };
 
