@@ -7,15 +7,6 @@ namespace Sharplus.Tests.System
     public class MathPlusTest
     {
         [Theory]
-        [InlineData(1, 1, 0, 2)]
-        [InlineData(1, 0, 1, 2)]
-        [InlineData(1, 2, 0, 1)]
-        public void Clamp(double expected, double value, double min, double max)
-        {
-            Assert.Equal(expected, MathPlus.Clamp(value, min, max));
-        }
-
-        [Theory]
         [InlineData(1, 0)]
         [InlineData(1, 1)]
         [InlineData(2, 2)]
@@ -44,6 +35,16 @@ namespace Sharplus.Tests.System
         }
 
         [Theory]
+        [InlineData(true, 1, 1, 0)]
+        [InlineData(true, 1, 1, 1)]
+        [InlineData(false, 1, 2, 0)]
+        [InlineData(true, 1, 2, 1)]
+        public void IsErrorInRange(bool expected, double inferredValue, double expectedValue, double errorRange)
+        {
+            Assert.Equal(expected, MathPlus.IsErrorInRange(inferredValue, expectedValue, errorRange));
+        }
+
+        [Theory]
         [InlineData(1, 1, 2, 0)]
         [InlineData(1.5, 1, 2, 0.5)]
         [InlineData(2, 1, 2, 2)]
@@ -57,9 +58,9 @@ namespace Sharplus.Tests.System
         [InlineData(1, 1, 2)]
         [InlineData(0, -2, 2)]
         [InlineData(1, -1, 2)]
-        public void Mod(int expected, int dividend, int divider)
+        public void Mod(int expected, int dividend, int divisor)
         {
-            Assert.Equal(expected, MathPlus.Mod(dividend, divider));
+            Assert.Equal(expected, MathPlus.Mod(dividend, divisor));
         }
 
         [Theory]
