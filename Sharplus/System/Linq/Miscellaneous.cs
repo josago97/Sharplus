@@ -341,12 +341,21 @@ namespace System.Linq
 
             index = -1;
             TSource result = default;
-            TSource[] sourceArray = source.ToArray();
 
-            if (sourceArray.Length > 0)
+            if (source is IReadOnlyList<TSource> sourceReadOnlyList && sourceReadOnlyList.Count > 0)
             {
-                index = random.Next(0, sourceArray.Length);
-                result = sourceArray[index];
+                index = random.Next(0, sourceReadOnlyList.Count);
+                result = sourceReadOnlyList[index];
+            }
+            else
+            {
+                IList<TSource> sourceList = source as IList<TSource> ?? source.ToArray();
+
+                if (sourceList.Count > 0)
+                {
+                    index = random.Next(0, sourceList.Count);
+                    result = sourceList[index];
+                }
             }
 
             return result;
