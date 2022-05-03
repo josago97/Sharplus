@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Sharplus.Architecture.Locator
+namespace Sharplus.Architecture.ServiceLocator
 {
     public static class ServiceLocator
     {

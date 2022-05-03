@@ -7,10 +7,10 @@
     <Company>Jose97</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>A library with things that would come in handy</Description>
-    <PackageTags>Thing, Things, Utils</PackageTags>
+    <PackageTags>Utils</PackageTags>
     <RepositoryType></RepositoryType>
     <RepositoryUrl>https://github.com/josago97/Sharplus</RepositoryUrl>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

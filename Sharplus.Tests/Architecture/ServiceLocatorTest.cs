@@ -1,5 +1,5 @@
 ﻿using System;
-using Sharplus.Architecture.Locator;
+using Sharplus.Architecture.ServiceLocator;
 using Xunit;
 
 namespace Sharplus.Tests.Architecture

@@ -20,6 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Sharplus.Architecture\Sharplus.Architecture.csproj" />
+    <ProjectReference Include="..\Sharplus.WebSockets\Sharplus.WebSockets.csproj" />
     <ProjectReference Include="..\Sharplus\Sharplus.csproj" />
   </ItemGroup>
 
