@@ -35,7 +35,7 @@ namespace Sharplus.Tests.WebSockets
         [Fact]
         public async void ConnectAndDisconnect()
         {
-            WebSocket webSocket = await ConnectAsync();
+            await ConnectAsync();
 
             Assert.True(_listener.IsListening);
             Assert.True(_client.IsConnected);
@@ -114,6 +114,7 @@ namespace Sharplus.Tests.WebSockets
             messageReceived = false;
             await DisconnectAsync();
             SpinWait.SpinUntil(() => messageReceived);
+            SpinWait.SpinUntil(() => disconnected);
             Assert.True(disconnected);
         }
 
@@ -139,6 +140,7 @@ namespace Sharplus.Tests.WebSockets
             await Assert.ThrowsAsync<IOException>(() => _client.SendAsync(string.Empty));
             await Task.Delay(1000);
             Assert.False(messageReceived);
+            SpinWait.SpinUntil(() => disconnected);
             Assert.True(disconnected);
 
             _listener.Stop();

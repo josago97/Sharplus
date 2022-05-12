@@ -30,10 +30,10 @@ namespace Sharplus.Tests.Linq
 
         public static IEnumerable<object[]> FindAllIndexesData => new[]
         {
-            new object[] { new int[] { }, new int[] { 0, 1 }, 0, -1, (int x) => x < 0 },
+            new object[] { Array.Empty<int>(), new int[] { 0, 1 }, 0, -1, (int x) => x < 0 },
             new object[] { new int[] { 0 }, new int[] { 0, 1 }, 0, -1, (int x) => x == 0 },
-            new object[] { new int[] { }, new int[] { 0, 1, 2 }, 1, -1, (int x) => x == 0 },
-            new object[] { new int[] { }, new int[] { 0, 1, 2 }, 0, 1, (int x) => x == 2 },
+            new object[] { Array.Empty<int>(), new int[] { 0, 1, 2 }, 1, -1, (int x) => x == 0 },
+            new object[] { Array.Empty<int>(), new int[] { 0, 1, 2 }, 0, 1, (int x) => x == 2 },
             new object[] { new int[] { 0, 1 }, new int[] { 0, 1, 2 }, 0, -1, (int x) => x < 2 }
         };
 

@@ -290,13 +290,13 @@ namespace System.Linq
         {
             if (source == null) throw Error.ArgumentNull("source");
 
-            if (source is TSource[])
+            if (source is TSource[] array)
             {
-                Array.ForEach((TSource[])source, action);
+                Array.ForEach(array, action);
             }
-            else if (source is List<TSource>)
+            else if (source is List<TSource> list)
             {
-                ((List<TSource>)source).ForEach(action);
+                list.ForEach(action);
             }
             else
             {
@@ -386,7 +386,7 @@ namespace System.Linq
         /// </returns>
         public static TSource GetRandom<TSource>(this IEnumerable<TSource> source, Random random)
         {
-            return GetRandom(source, random, out int index);
+            return GetRandom(source, random, out int _);
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace System.Linq
         /// </returns>
         public static TSource GetRandom<TSource>(this IEnumerable<TSource> source)
         {
-            return GetRandom(source, out int index);
+            return GetRandom(source, out int _);
         }
 
         #endregion
@@ -425,26 +425,21 @@ namespace System.Linq
 
             bool areEqual = true;
 
-            using (IEnumerator<TFirst> e1 = first.GetEnumerator())
+            using IEnumerator<TFirst> e1 = first.GetEnumerator();
+            using IEnumerator<TSecond> e2 = second.GetEnumerator();
+            bool moveNext1 = true;
+            bool moveNext2 = true;
+
+            while (moveNext1 && moveNext2)
             {
-                using (IEnumerator<TSecond> e2 = second.GetEnumerator())
+                moveNext1 = e1.MoveNext();
+                moveNext2 = e2.MoveNext();
+
+                if (moveNext1 != moveNext2 || (moveNext1 && !equals(e1.Current, e2.Current)))
                 {
-                    bool moveNext1 = true;
-                    bool moveNext2 = true;
-
-                    while (moveNext1 && moveNext2)
-                    {
-                        moveNext1 = e1.MoveNext();
-                        moveNext2 = e2.MoveNext();
-
-                        if (moveNext1 != moveNext2 || (moveNext1 && !equals(e1.Current, e2.Current)))
-                        {
-                            areEqual = false;
-                            break;
-                        }
-                    }
+                    areEqual = false;
+                    break;
                 }
-
             }
 
             return areEqual;
@@ -590,9 +585,7 @@ namespace System.Linq
 
             if (index1 != index2)
             {
-                TSource temp = source[index2];
-                source[index2] = source[index1];
-                source[index1] = temp;
+                (source[index1], source[index2]) = (source[index2], source[index1]);
             }
         }
 
@@ -611,36 +604,35 @@ namespace System.Linq
             int firstIndex = Math.Min(index1, index2);
             int secondIndex = Math.Max(index1, index2);
 
-            using (IEnumerator<TSource> e = source.GetEnumerator())
+            using IEnumerator<TSource> e = source.GetEnumerator();
+
+            for (int i = 0; i < firstIndex; i++)
             {
-                for (int i = 0; i < firstIndex; i++)
-                {
-                    if (!e.MoveNext()) yield break;
+                if (!e.MoveNext()) yield break;
 
-                    yield return e.Current;
-                }
-
-                if (firstIndex != secondIndex)
-                {
-                    if (!e.MoveNext()) yield break;
-
-                    TSource rememberedItem = e.Current;
-                    List<TSource> subSequence = new List<TSource>(secondIndex - firstIndex - 1);
-
-                    for (int i = 0; i < subSequence.Capacity && e.MoveNext(); i++)
-                    {
-                        subSequence.Add(e.Current);
-                    }
-
-                    if (e.MoveNext()) yield return e.Current;
-
-                    foreach (TSource item in subSequence) yield return item;
-
-                    yield return rememberedItem;
-                }
-
-                while (e.MoveNext()) yield return e.Current;
+                yield return e.Current;
             }
+
+            if (firstIndex != secondIndex)
+            {
+                if (!e.MoveNext()) yield break;
+
+                TSource rememberedItem = e.Current;
+                List<TSource> subSequence = new List<TSource>(secondIndex - firstIndex - 1);
+
+                for (int i = 0; i < subSequence.Capacity && e.MoveNext(); i++)
+                {
+                    subSequence.Add(e.Current);
+                }
+
+                if (e.MoveNext()) yield return e.Current;
+
+                foreach (TSource item in subSequence) yield return item;
+
+                yield return rememberedItem;
+            }
+
+            while (e.MoveNext()) yield return e.Current;
         }
 
         #endregion
