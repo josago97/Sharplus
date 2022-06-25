@@ -7,7 +7,7 @@
 	<Authors>Jose97</Authors>
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<Version>1.0.0</Version>
-	<Description>A library with utilities for Android</Description>
+	<Description>A library with utilities for Xamarin Android</Description>
 	<RepositoryUrl>https://github.com/josago97/Sharplus</RepositoryUrl>
 	<PackageTags>Android, Utils</PackageTags>
   </PropertyGroup>

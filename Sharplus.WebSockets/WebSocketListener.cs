@@ -31,7 +31,7 @@ namespace Sharplus.WebSockets
             _httpListener.Stop();
         }
 
-        public async Task<HttpListenerContext> GetHttpListenerContextAsync(CancellationToken cancellation = default)
+        public async Task<HttpListenerContext> GetHttpListenerContextAsync()
         {
             return await _httpListener.GetContextAsync();
         }
@@ -42,7 +42,7 @@ namespace Sharplus.WebSockets
 
             while (webSocketContext == null && !cancellation.IsCancellationRequested)
             {
-                HttpListenerContext context = await GetHttpListenerContextAsync(cancellation);
+                HttpListenerContext context = await GetHttpListenerContextAsync();
 
                 if (context.Request.IsWebSocketRequest)
                 {

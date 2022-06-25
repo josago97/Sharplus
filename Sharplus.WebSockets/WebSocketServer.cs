@@ -37,7 +37,7 @@ namespace Sharplus.WebSockets
 
                 try
                 {
-                    messageReceived = await Socket.ReceiveAsync(_listenCancellationSource.Token);
+                    messageReceived = await Socket.ReceiveAsync(cancellation: _listenCancellationSource.Token);
                 }
                 catch (Exception ex)
                 {

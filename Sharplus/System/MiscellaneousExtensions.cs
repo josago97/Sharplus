@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace System
 {
@@ -19,6 +21,33 @@ namespace System
             copy.Position = 0;
             stream.Position = 0;
             return copy;
+        }
+
+        /// <summary>
+        /// Writes the stream contents to a byte array, regardless of the <see cref="Stream"/>.Position property.
+        /// </summary>
+        /// <param name="stream">The stream to read.</param>
+        /// <returns>
+        /// A new byte array.
+        /// </returns>
+        public static byte[] ReadAsByteArray(this Stream stream)
+        {
+            byte[] result;
+
+            if (stream is MemoryStream memoryStream)
+            {
+                result = memoryStream.ToArray();
+            }
+            else
+            {
+                using (memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    result = memoryStream.ToArray();
+                }
+            }
+
+            return result;
         }
 
         /// <summary>

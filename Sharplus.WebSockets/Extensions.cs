@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -11,13 +10,13 @@ namespace Sharplus.WebSockets
 {
     public static class Extensions
     {
-        private static readonly int RECEIVE_BUFFER_SIZE = (int)Math.Pow(2, 10);
+        private const int RECEIVE_BUFFER_SIZE = 2048; // 2^10 bytes
 
-        public static async Task<WebSocketReceiveMessage> ReceiveAsync(this WebSocket socket, CancellationToken cancellation = default)
+        public static async Task<WebSocketReceiveMessage> ReceiveAsync(this WebSocket socket, int bufferSeize = RECEIVE_BUFFER_SIZE, CancellationToken cancellation = default)
         {
             WebSocketReceiveMessage result = null;
             WebSocketReceiveResult socketReceiveResult;
-            byte[] buffer = new byte[RECEIVE_BUFFER_SIZE];
+            byte[] buffer = new byte[bufferSeize];
             ArraySegment<byte> bytesReceived = new ArraySegment<byte>(buffer);
             List<byte> content = new List<byte>();
 
@@ -25,12 +24,12 @@ namespace Sharplus.WebSockets
             {
                 socketReceiveResult = await socket.ReceiveAsync(bytesReceived, cancellation);
 
-                if (socketReceiveResult != null) 
+                if (socketReceiveResult != null)
                     content.AddRange(bytesReceived.Slice(0, socketReceiveResult.Count));
             }
             while (socketReceiveResult != null && !socketReceiveResult.EndOfMessage && !cancellation.IsCancellationRequested);
 
-            if (socketReceiveResult != null) 
+            if (socketReceiveResult != null)
                 result = new WebSocketReceiveMessage(socketReceiveResult, content.ToArray());
 
             return result;

@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharplus.WebSockets", "Shar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sharplus.Droid", "Sharplus.Droid\Sharplus.Droid.csproj", "{1C79BF85-14B6-428F-BBCF-5D68B051C576}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharplus.Droid.Tests", "Sharplus.Droid.Tests\Sharplus.Droid.Tests.csproj", "{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sharplus.WebSockets.Tests", "Sharplus.WebSockets.Tests\Sharplus.WebSockets.Tests.csproj", "{8E4A30A7-C8D3-43F3-8239-FFA5F0C821E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,16 @@ Global
 		{1C79BF85-14B6-428F-BBCF-5D68B051C576}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C79BF85-14B6-428F-BBCF-5D68B051C576}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C79BF85-14B6-428F-BBCF-5D68B051C576}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23854FE5-5C6F-4B9E-9530-D4DCE2871E0C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{8E4A30A7-C8D3-43F3-8239-FFA5F0C821E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E4A30A7-C8D3-43F3-8239-FFA5F0C821E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E4A30A7-C8D3-43F3-8239-FFA5F0C821E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E4A30A7-C8D3-43F3-8239-FFA5F0C821E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
