@@ -41,16 +41,28 @@ namespace Sharplus.Tests.Collections
             Assert.Equal(count, circularArray.Length);
         }
 
-        [Fact]
-        public void AddOverflow()
+        [Theory]
+        [InlineData(new int[] {3, 4, 5}, new int[] {1, 2, 3, 4, 5}, 3)]
+        public void AddOverflow(int[] expected, int[] items, int size)
         {
-            int[] items = new int[] { 1, 2, 3, 4 };
-            int newItem = 5;
-            CircularArray<int> circularArray = new CircularArray<int>(items);
-            circularArray.Add(newItem);
+            CircularArray<int> circularArray = new CircularArray<int>(size);
 
-            Assert.Equal(items.Length, circularArray.Length);
-            Assert.Equal(newItem, circularArray[circularArray.Length - 1]);
+            items.ForEach(x => circularArray.Add(x));
+
+            Assert.Equal(size, circularArray.Length);
+            Assert.Equal(expected, circularArray);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 3, 4, 5 }, new int[] { 1, 2, 3, 4, 5 }, 3)]
+        public void ToArray(int[] expected, int[] items, int size)
+        {
+            CircularArray<int> circularArray = new CircularArray<int>(size);
+
+            items.ForEach(x => circularArray.Add(x));
+
+            Assert.Equal(size, circularArray.Length);
+            Assert.Equal(expected, circularArray.ToArray());
         }
     }
 }

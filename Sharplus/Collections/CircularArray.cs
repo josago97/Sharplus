@@ -38,8 +38,8 @@ namespace System.Collections.Generic
 
         public CircularArray(int capacity)
         {
-            _items = new T[capacity];
             Clear();
+            _items = new T[capacity];
         }
 
         public CircularArray(IEnumerable<T> collection)
@@ -73,11 +73,6 @@ namespace System.Collections.Generic
             }
         }
 
-        public T GetValue(int index)
-        {
-            return _items[index];
-        }
-
         public bool Contains(T item)
         {
             return _items.Contains(item);
@@ -85,12 +80,18 @@ namespace System.Collections.Generic
 
         public void CopyTo(Array array, int arrayIndex)
         {
-            _items.CopyTo(array, arrayIndex);
+            for (int i = 0; i < _size; i++)
+            {
+                array.SetValue(this[i], arrayIndex + i);
+            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            _items.CopyTo(array, arrayIndex);
+            for (int i = 0; i < _size; i++)
+            {
+                array[arrayIndex + i] = this[i];
+            }
         }
 
         public void Clear()
@@ -102,7 +103,11 @@ namespace System.Collections.Generic
 
         public T[] ToArray()
         {
-            return _items;
+            T[] result = new T[_size];
+
+            CopyTo(result, 0);
+
+            return result;
         }
 
         public IEnumerator<T> GetEnumerator()
