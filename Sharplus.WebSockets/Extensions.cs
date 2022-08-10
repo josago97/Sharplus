@@ -10,9 +10,9 @@ namespace Sharplus.WebSockets
 {
     public static class Extensions
     {
-        private const int RECEIVE_BUFFER_SIZE = 2048; // 2^10 bytes
+        private const int DEFAULT_RECEIVE_BUFFER_SIZE = 2048; // 2^10 bytes
 
-        public static async Task<WebSocketReceiveMessage> ReceiveAsync(this WebSocket socket, int bufferSeize = RECEIVE_BUFFER_SIZE, CancellationToken cancellation = default)
+        public static async Task<WebSocketReceiveMessage> ReceiveAsync(this WebSocket socket, int bufferSeize = DEFAULT_RECEIVE_BUFFER_SIZE, CancellationToken cancellation = default)
         {
             WebSocketReceiveMessage result = null;
             WebSocketReceiveResult socketReceiveResult;

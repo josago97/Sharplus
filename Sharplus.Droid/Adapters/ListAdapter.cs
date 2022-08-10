@@ -52,7 +52,7 @@ namespace Sharplus.Droid.Adapters
                 convertView = LayoutInflater.From(_context).Inflate(layout, null);
             }
 
-            slot.Show(convertView);
+            slot.Show(convertView, parent);
 
             return convertView;
         }

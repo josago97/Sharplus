@@ -5,37 +5,24 @@ using System.Threading.Tasks;
 
 namespace Sharplus.WebSockets
 {
-    public class WebSocketClient : WebSocketWrapper
+    public class WebSocketClient : BaseWebSocketClient
     {
-        public static readonly TimeSpan DEFAULT_RECONNECTION_INTERVAL = TimeSpan.FromSeconds(10);
-
         private Task _connectTask;
         private CancellationTokenSource _connectCancellationSource;
 
-        public ClientWebSocketOptions Options => Socket.Options;
-        public TimeSpan ReconnectionInterval { get; set; }
-        public bool ReconnectionEnabled { get; set; }
-        public bool IsConnecting { get; private set; }
-        public Uri Uri { get; private set; }
-        protected new ClientWebSocket Socket
+        public WebSocketClient(ClientWebSocket clientWebSocket, Action<ClientWebSocket> factory = null) : base(clientWebSocket, factory)
         {
-            get => base.Socket as ClientWebSocket;
-            set => base.Socket = value;
         }
 
-        public WebSocketClient(ClientWebSocket clientWebSocket) : base(clientWebSocket)
+        public WebSocketClient(Uri uri, Action<ClientWebSocket> factory = null) : base(uri, factory)
         {
-            ReconnectionInterval = DEFAULT_RECONNECTION_INTERVAL;
-            ReconnectionEnabled = true;
-            IsConnecting = false;
         }
 
-        public WebSocketClient(string url) : this(new ClientWebSocket())
+        public WebSocketClient(string url, Action<ClientWebSocket> factory = null) : base(url, factory)
         {
-            Uri = new Uri(url);
         }
 
-        public async Task ConnectAsync(CancellationToken cancellation = default)
+        public override async Task ConnectAsync(CancellationToken cancellation = default)
         {
             if (IsConnecting) await _connectTask;
             else
@@ -51,9 +38,13 @@ namespace Sharplus.WebSockets
                         {
                             await Socket.ConnectAsync(Uri, _connectCancellationSource.Token);
                         }
-                        catch 
+                        catch
                         {
-                            if (ReconnectionEnabled) CreateNewSocket();
+                            if (ReconnectionEnabled && !cancellation.IsCancellationRequested)
+                            {
+                                CreateNewSocket();
+                                await Task.Delay(ReconnectionInterval, cancellation);
+                            }
                             else throw;
                         }
                     }
@@ -64,34 +55,6 @@ namespace Sharplus.WebSockets
 
                 await _connectTask;
             }
-        }
-
-        public override void Abort()
-        {
-            ReconnectionEnabled = false;
-            _connectCancellationSource?.Cancel();
-            base.Abort();
-        }
-
-        public override async Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken = default)
-        {
-            ReconnectionEnabled = false;
-            _connectCancellationSource?.Cancel();
-            await base.CloseAsync(closeStatus, statusDescription, cancellationToken);
-        }
-
-        public override async Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken = default)
-        {
-            ReconnectionEnabled = false;
-            _connectCancellationSource?.Cancel();
-            await base.CloseOutputAsync(closeStatus, statusDescription, cancellationToken);
-        }
-
-        public override void Dispose()
-        {
-            ReconnectionEnabled = false;
-            _connectCancellationSource?.Cancel();
-            base.Dispose();
         }
 
         public override async Task<WebSocketReceiveResult> ReceiveAsync(ArraySegment<byte> buffer, CancellationToken cancellationToken = default)
@@ -124,18 +87,32 @@ namespace Sharplus.WebSockets
             }
         }
 
-        private void CreateNewSocket()
+        public override void Abort()
         {
-            ClientWebSocket newSocket = new ClientWebSocket();
-            newSocket.Options.ClientCertificates = Options.ClientCertificates;
-            newSocket.Options.Cookies = Options.Cookies;
-            newSocket.Options.Credentials = Options.Credentials;
-            newSocket.Options.KeepAliveInterval = Options.KeepAliveInterval;
-            newSocket.Options.Proxy = Options.Proxy;
-            newSocket.Options.RemoteCertificateValidationCallback = Options.RemoteCertificateValidationCallback;
-            newSocket.Options.UseDefaultCredentials = Options.UseDefaultCredentials;
+            ReconnectionEnabled = false;
+            _connectCancellationSource?.Cancel();
+            base.Abort();
+        }
 
-            Socket = newSocket;
+        public override async Task CloseAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken = default)
+        {
+            ReconnectionEnabled = false;
+            _connectCancellationSource?.Cancel();
+            await base.CloseAsync(closeStatus, statusDescription, cancellationToken);
+        }
+
+        public override async Task CloseOutputAsync(WebSocketCloseStatus closeStatus, string statusDescription, CancellationToken cancellationToken = default)
+        {
+            ReconnectionEnabled = false;
+            _connectCancellationSource?.Cancel();
+            await base.CloseOutputAsync(closeStatus, statusDescription, cancellationToken);
+        }
+
+        public override void Dispose()
+        {
+            ReconnectionEnabled = false;
+            _connectCancellationSource?.Cancel();
+            base.Dispose();
         }
     }
 }

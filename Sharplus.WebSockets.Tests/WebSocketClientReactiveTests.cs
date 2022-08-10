@@ -10,89 +10,98 @@ using Xunit;
 
 namespace Sharplus.Tests.WebSockets
 {
-    public class WebSocketsTests : IDisposable
+    public class WebSocketClientReactiveTests : BaseWebSocketClientTests<WebSocketClientReactive>
     {
-        private WebSocketListener _listener;
-        private WebSocketClient _client;
-
-        public WebSocketsTests()
+        protected override WebSocketClientReactive CreateWebSocketClient(string url)
         {
-            int port = GetFreePort();
-            _listener = new WebSocketListener(port, "localhost");
-            _client = new WebSocketClient($"ws://localhost:{port}");
-        }
-
-        private int GetFreePort()
-        {
-            TcpListener tcpListener = new TcpListener(IPAddress.Loopback, 0);
-            tcpListener.Start();
-            int port = ((IPEndPoint)tcpListener.LocalEndpoint).Port;
-            tcpListener.Stop();
-
-            return port;
+            return new WebSocketClientReactive(url);
         }
 
         [Fact]
         public async void ConnectAndDisconnect()
         {
-            await ConnectAsync();
+            bool isConnected = false;
 
-            Assert.True(_listener.IsListening);
-            Assert.True(_client.IsConnected);
+            client.Connected += () => isConnected = true;
+            client.Disconnected += (_, __, ___) => isConnected = false;
+
+            await ConnectAsync();
+            await Task.Delay(1000);
+
+            Assert.True(listener.IsListening);
+            Assert.True(client.IsConnected);
+            Assert.True(isConnected);
 
             await DisconnectAsync();
+            await Task.Delay(1000);
 
-            Assert.False(_listener.IsListening);
-            Assert.False(_client.IsConnected);
+            Assert.False(listener.IsListening);
+            Assert.False(client.IsConnected);
+            Assert.False(isConnected);
         }
 
         [Fact]
-        public async void SendAndReceiveMessage()
+        public async void SendMessagesToClient()
         {
+            WebSocketReceiveMessage receiveMessage = null;
+            bool isMessageReceived = false;
             WebSocket listenerWebSocket = await ConnectAsync();
             using Stream stream = new MemoryStream();
 
+            client.MessageReceived += m => { receiveMessage = m; isMessageReceived = true; };
+
             object objectMessage = new { Variable = 123, Variable2 = "Hello" };
-            await _client.SendAsync(objectMessage);
-            WebSocketReceiveMessage receiveMessage = await listenerWebSocket.ReceiveAsync();
+            await listenerWebSocket.SendAsync(objectMessage);
+            SpinWait.SpinUntil(() => isMessageReceived, 2000);
+            isMessageReceived = false;
             Assert.Equal(objectMessage, receiveMessage.Parse(objectMessage.GetType()));
 
             string stringMessage = "Hello world";
-            await _client.SendAsync(stringMessage);
-            receiveMessage = await listenerWebSocket.ReceiveAsync();
+            await listenerWebSocket.SendAsync(stringMessage);
+            SpinWait.SpinUntil(() => isMessageReceived, 2000);
+            isMessageReceived = false;
             Assert.Equal(stringMessage, receiveMessage.GetContentString());
 
             byte[] bytesMessage = new byte[] { 0, 1, 2 };
-            await _client.SendAsync(bytesMessage);
-            receiveMessage = await listenerWebSocket.ReceiveAsync();
+            await listenerWebSocket.SendAsync(bytesMessage);
+            SpinWait.SpinUntil(() => isMessageReceived, 2000);
+            isMessageReceived = false;
             Assert.Equal(bytesMessage, receiveMessage.Content);
 
             await DisconnectAsync();
         }
 
         [Fact]
+        public async void SendMessagesToListener()
+        {
+            WebSocket listenerWebSocket = await ConnectAsync();
+            await SendAndReceiveMessageAsync(client, listenerWebSocket);
+            await DisconnectAsync();
+        }
+
+        [Fact]
         public async void Reconnect()
         {
-            _client.ReconnectionEnabled = true;
+            client.ReconnectionEnabled = true;
             WebSocket webSocket = await ConnectAsync();
 
-            Assert.True(_client.IsConnected);
-            Assert.False(_client.IsConnecting);
+            Assert.True(client.IsConnected);
+            Assert.False(client.IsConnecting);
 
-            _listener.Stop();
-            await Assert.ThrowsAsync<WebSocketException>(() => _client.ReceiveAsync());
-            Assert.False(_client.IsConnected);
-            Assert.True(_client.IsConnecting);
+            listener.Stop();
+            await Assert.ThrowsAsync<WebSocketException>(() => client.ReceiveAsync());
+            Assert.False(client.IsConnected);
+            Assert.True(client.IsConnecting);
 
-            _listener.Start();
-            webSocket = (await _listener.GetWebSocketContextAsync()).WebSocket;
-            Assert.True(_client.IsConnected);
-            Assert.False(_client.IsConnecting);
+            listener.Start();
+            webSocket = (await listener.GetWebSocketContextAsync()).WebSocket;
+            Assert.True(client.IsConnected);
+            Assert.False(client.IsConnecting);
 
             await DisconnectAsync();
 
-            Assert.False(_client.IsConnected);
-            Assert.False(_client.IsConnecting);
+            Assert.False(client.IsConnected);
+            Assert.False(client.IsConnecting);
         }
 
         [Fact]
@@ -106,7 +115,7 @@ namespace Sharplus.Tests.WebSockets
             webSocketServer.MessageReceived += (_, __) => messageReceived = true;
             webSocketServer.Start();
 
-            await _client.SendAsync(string.Empty);
+            await client.SendAsync(string.Empty);
 
             SpinWait.SpinUntil(() => messageReceived);
             Assert.False(disconnected);
@@ -129,7 +138,7 @@ namespace Sharplus.Tests.WebSockets
             webSocketServer.MessageReceived += (_, __) => messageReceived = true;
             webSocketServer.Start();
 
-            await _client.SendAsync(string.Empty);
+            await client.SendAsync(string.Empty);
 
             SpinWait.SpinUntil(() => messageReceived);
             Assert.True(messageReceived);
@@ -137,36 +146,13 @@ namespace Sharplus.Tests.WebSockets
 
             webSocketServer.Stop();
             messageReceived = false;
-            await Assert.ThrowsAsync<IOException>(() => _client.SendAsync(string.Empty));
+            await Assert.ThrowsAsync<IOException>(() => client.SendAsync(string.Empty));
             await Task.Delay(1000);
             Assert.False(messageReceived);
             SpinWait.SpinUntil(() => disconnected);
             Assert.True(disconnected);
 
-            _listener.Stop();
-        }
-
-        public void Dispose()
-        {
-            _listener.Dispose();
-        }
-
-        private async Task<WebSocket> ConnectAsync()
-        {
-            WebSocket result;
-
-            _listener.Start();
-            Task clientConnectTask = _client.ConnectAsync();
-            result = (await _listener.GetWebSocketContextAsync()).WebSocket;
-            await clientConnectTask;
-
-            return result;
-        }
-
-        private async Task DisconnectAsync()
-        {
-            await _client.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty);
-            _listener.Stop();
+            listener.Stop();
         }
     }
 }

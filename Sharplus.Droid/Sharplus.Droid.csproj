@@ -16,9 +16,11 @@
 		<None Include="Resources\AboutResources.txt" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.1.1" />
+		<PackageReference Include="System.Text.Json" Version="6.0.5" />
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.4.2.1" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.1.7" />
 		<PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout">
-			<Version>1.1.0.8</Version>
+			<Version>1.1.0.9</Version>
 		</PackageReference>
 	</ItemGroup>
 	

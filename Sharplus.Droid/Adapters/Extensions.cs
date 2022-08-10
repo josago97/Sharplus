@@ -9,7 +9,7 @@ namespace Sharplus.Droid.Adapters
             return (ListAdapter<T>)adapter;
         }
 
-        public static ListAdapter<T> GetListAdapter<T>(this ListView listView)
+        public static ListAdapter<T> GetListAdapter<T>(this AbsListView listView)
         {
             return listView.Adapter.ToListAdapter<T>();
         }

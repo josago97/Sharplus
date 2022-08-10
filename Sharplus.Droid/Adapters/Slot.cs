@@ -12,7 +12,7 @@ namespace Sharplus.Droid.Adapters
             Data = data;
         }
 
-        public abstract void Show(View view);
+        public abstract void Show(View view, ViewGroup parent);
     }
 
     public abstract class Slot<T> : Slot
