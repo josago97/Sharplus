@@ -43,7 +43,7 @@ namespace Sharplus.Droid.Tests
             {
             }
 
-            public override void Show(View view)
+            public override void Show(View view, ViewGroup parent)
             {
                 view.FindViewById<TextView>(Resource.Id.textView).Text = Data;
             }
