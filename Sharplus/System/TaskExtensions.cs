@@ -66,6 +66,28 @@
         }
 
         /// <summary>
+        /// Create a continuation that receives an <see cref="Func{TResult, Task{TNewResult}}"/> and will be executed when the task has been executed.
+        /// </summary>
+        /// <param name="task">
+        /// The <see cref="Task{TResult}"/> representing the pending operation.
+        /// </param>
+        /// <param name="continuationFunction">
+        /// An <see cref="Func{TResult, Task{TNewResult}}"/> to run when the task completes.
+        /// </param>
+        /// <returns>
+        /// A new continuation <see cref="Task{TNewResult}"/>.
+        /// </returns>
+        public static async Task<TNewResult> ContinueWithResult<TResult, TNewResult>(this Task<TResult> task, Func<TResult, Task<TNewResult>> continuationFunction)
+        {
+            return await task.ContinueWith(t =>
+            {
+                if (t.IsFaulted) throw t.Exception;
+
+                return continuationFunction(task.Result);
+            }).Unwrap();
+        }
+
+        /// <summary>
         /// Returns a completed task if task is null.
         /// </summary>
         /// <param name="task">

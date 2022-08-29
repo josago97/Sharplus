@@ -56,6 +56,24 @@ namespace Sharplus.Tests
         }
 
         [Fact]
+        public async void ContinueWithResultTaskWithoutException()
+        {
+            int result = await TaskWithoutException().ContinueWithResult((_) => TaskWithoutException());
+
+            Assert.Equal(await TaskWithoutException(), result);
+        }
+
+        [Fact]
+        public async void ContinueWithResultTaskWithException()
+        {
+            Task task = TaskWithoutException().ContinueWithResult((_) => TaskWithException());
+
+            await Assert.ThrowsAsync<Exception>(() => task);
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+        }
+
+        [Fact]
         public async void ForAwaitWithoutResult()
         {
             Task nullTask = null;
