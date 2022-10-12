@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -12,7 +11,7 @@ namespace System
         #region EndsWith
 
         /// <summary>
-        /// Determines if the end of <paramref name="text"/> matches any of the specified strings.
+        /// Determines if the end of a <see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its end.</param>
         /// <param name="suffixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
@@ -67,7 +66,7 @@ namespace System
         #region RemoveAccents
 
         /// <summary>
-        /// Returns a copy of <paramref name="text"/> without accents.
+        /// Returns a copy of a <see cref="string"/> without accents.
         /// </summary>        
         /// <param name="text">The string to remove specified accents.</param>
         /// <param name="ignore">The characters with accent to ignore.</param>
@@ -99,10 +98,31 @@ namespace System
 
         #endregion
 
+        #region Repeat
+        /// <summary>
+        /// Returns a new <see cref="string"/> which contains the specified number of copies of the <see cref="string"/> on which it was called, concatenated together.
+        /// </summary>        
+        /// <param name="text">The <see cref="string"/> to repeat.</param>
+        /// <param name="count">An <see cref="int"/> indicating the number of times to repeat the <see cref="string"/>.</param>
+        /// <returns>
+        /// A new <see cref="string"/> containing the specified number of copies of the given <see cref="string"/>.
+        /// </returns>
+        public static string Repeat(this string text, int count)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (int i = 0; i < count; i++)
+                stringBuilder.Append(text);
+
+            return stringBuilder.ToString();
+        }
+
+        #endregion
+
         #region StartsWith
 
         /// <summary>
-        /// Determines if the start of <paramref name="text"/> matches any of the specified strings.
+        /// Determines if the start of a<see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its start.</param>
         /// <param name="prefixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
@@ -117,7 +137,7 @@ namespace System
         }
 
         /// <summary>
-        /// Determines if the start of <paramref name="text"/> matches any of the specified strings.
+        /// Determines if the start of a <see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its start.</param>
         /// <param name="comparisonType">One of the enumeration values that determines how <paramref name="text"/> and other <see cref="string"/> are compared.</param>
@@ -133,7 +153,7 @@ namespace System
         }
 
         /// <summary>
-        /// Determines if the start of <paramref name="text"/> matches any of the specified strings.
+        /// Determines if the start of a <see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its start.</param>
         /// <param name="ignoreCase"><see langword="true"/> to ignore case during the comparison; otherwise, <see langword="false"/>.</param>
@@ -157,7 +177,7 @@ namespace System
         #region Base64
 
         /// <summary>
-        /// Returns a copy of <paramref name="text"/> that is encoded with base-64 digits.
+        /// Returns a copy of a <see cref="string"/> that is encoded with base-64 digits.
         /// </summary>        
         /// <param name="text">The string to encoded.</param>
         /// <param name="encoding">The source encoding of <paramref name="text"/>.</param>
@@ -241,7 +261,7 @@ namespace System
         #region ToTitleCase
 
         /// <summary>
-        /// Returns a copy of <paramref name="text"/> converted to title case.
+        /// Returns a copy of a <see cref="string"/> converted to title case.
         /// </summary>        
         /// <param name="text">The string to convert.</param>
         /// <param name="onlyFirst"><see langword="true"/> to set upper case only the first character; <see langword="false"/> to convert all.</param>
@@ -269,7 +289,7 @@ namespace System
         }
 
         /// <summary>
-        /// Returns a copy of <paramref name="text"/> converted to title case (except for words 
+        /// Returns a copy of a <see cref="string"/> converted to title case (except for words 
         /// that are entirely in uppercase, which are considered to be acronyms).
         /// </summary>        
         /// <param name="text">The string to convert.</param>
@@ -287,7 +307,7 @@ namespace System
         #region Translate
 
         /// <summary>
-        /// Returns a copy of <paramref name="text"/> in which all occurrences of all specified replacements are replaced.
+        /// Returns a copy of a <see cref="string"/> in which all occurrences of all specified replacements are replaced.
         /// </summary>        
         /// <param name="text">The string to replace with the specified replacements.</param>
         /// <param name="replacements">The replacements that define which <see cref="string"/> is replaced by another <see cref="string"/>.</param>

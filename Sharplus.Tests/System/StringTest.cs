@@ -29,6 +29,16 @@ namespace Sharplus.Tests.System
         }
 
         [Theory]
+        [InlineData("", "hello", -1)]
+        [InlineData("", "hello", 0)]
+        [InlineData("hello", "hello", 1)]
+        [InlineData("hellohello", "hello", 2)]
+        public void Repeat(string expected, string text, int count)
+        {
+            Assert.Equal(expected, text.Repeat(count));
+        }
+
+        [Theory]
         [InlineData(false, -1, "hello", new string[] { })]
         [InlineData(true, 0, "hello", new string[] { "hello" })]
         [InlineData(true, 1, "hello", new string[] { "a", "he" })]
