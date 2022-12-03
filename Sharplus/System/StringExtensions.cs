@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace System
@@ -29,13 +30,13 @@ namespace System
         /// Determines if the end of <paramref name="text"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its end.</param>
-        /// <param name="comparisonType">One of the enumeration values that determines how <paramref name="text"/> and other <see cref="string"/> are compared.</param>
         /// <param name="suffixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
         /// <param name="values">The specified strings to compare to the end of <paramref name="text"/>.</param>
+        /// <param name="comparisonType">One of the enumeration values that determines how <paramref name="text"/> and other <see cref="string"/> are compared.</param>
         /// <returns>
         /// <see langword="true"/> if the end of <paramref name="text"/> matches any of the strings of <paramref name="values"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool EndsWith(this string text, StringComparison comparisonType, out int suffixIndex, IEnumerable<string> values)
+        public static bool EndsWith(this string text, out int suffixIndex, IEnumerable<string> values, StringComparison comparisonType)
         {
             suffixIndex = values.FindIndex(s => text.EndsWith(s, comparisonType));
             return suffixIndex >= 0;
@@ -45,20 +46,58 @@ namespace System
         /// Determines if the end of <paramref name="text"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its end.</param>
+        /// <param name="suffixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
+        /// <param name="values">The specified strings to compare to the end of <paramref name="text"/>.</param>
         /// <param name="ignoreCase"><see langword="true"/> to ignore case during the comparison; otherwise, <see langword="false"/>.</param>
         /// <param name="culture">
         /// Cultural information that determines how <paramref name="text"/> and other <see cref="string"/> are compared.
         /// If culture is null, the current culture is used.
         /// </param>
-        /// <param name="suffixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
-        /// <param name="values">The specified strings to compare to the end of <paramref name="text"/>.</param>
         /// <returns>
         /// <see langword="true"/> if the end of <paramref name="text"/> matches any of the strings of <paramref name="values"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool EndsWith(this string text, bool ignoreCase, CultureInfo culture, out int suffixIndex, IEnumerable<string> values)
-        {
+        public static bool EndsWith(this string text, out int suffixIndex, IEnumerable<string> values, bool ignoreCase, CultureInfo culture)
+        { 
             suffixIndex = values.FindIndex(s => text.EndsWith(s, ignoreCase, culture));
             return suffixIndex >= 0;
+        }
+
+        #endregion
+
+        #region FindOcurrences
+
+        /// <summary>
+        /// Searches all present occurrences of a pattern in a <see cref="string"/> and returns the indices where each occurrence starts.
+        /// </summary>        
+        /// <param name="text">The string to search for.</param>
+        /// <param name="pattern">The string to seek.</param>
+        /// <param name="ignoreCase"><see langword="true"/> to ignore case; <see langword="false"/> to regard case.</param>
+        /// <returns>
+        /// The indices of where each found occurrence starts.
+        /// </returns>
+        public static int[] FindOcurrences(this string text, string pattern, bool ignoreCase)
+        {
+            Regex regex;
+
+            if (ignoreCase)
+                regex = new Regex(Regex.Escape(pattern), RegexOptions.IgnoreCase);
+            else
+                regex = new Regex(Regex.Escape(pattern));
+
+            return regex.Matches(text).Select(m => m.Index).ToArray();
+        }
+
+        /// <summary>
+        /// Searches all present occurrences of a pattern in a <see cref="string"/> and returns the indices where each occurrence starts.
+        /// </summary>        
+        /// <param name="text">The string to search for.</param>
+        /// <param name="pattern">The string to seek.</param>
+        /// <returns>
+        /// The indices of where each found occurrence starts.
+        /// </returns>
+        public static int[] FindOcurrences(this string text, string pattern)
+        {
+            return text.FindOcurrences(pattern, false);
         }
 
         #endregion
@@ -140,13 +179,13 @@ namespace System
         /// Determines if the start of a <see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its start.</param>
-        /// <param name="comparisonType">One of the enumeration values that determines how <paramref name="text"/> and other <see cref="string"/> are compared.</param>
         /// <param name="prefixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
         /// <param name="values">The specified strings to compare to the start of <paramref name="text"/>.</param>
+        /// <param name="comparisonType">One of the enumeration values that determines how <paramref name="text"/> and other <see cref="string"/> are compared.</param>
         /// <returns>
         /// <see langword="true"/> if the start of <paramref name="text"/> matches any of the strings of <paramref name="values"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool StartsWith(this string text, StringComparison comparisonType, out int prefixIndex, IEnumerable<string> values)
+        public static bool StartsWith(this string text, out int prefixIndex, IEnumerable<string> values, StringComparison comparisonType)
         {
             prefixIndex = values.FindIndex(s => text.StartsWith(s, comparisonType));
             return prefixIndex >= 0;
@@ -156,17 +195,17 @@ namespace System
         /// Determines if the start of a <see cref="string"/> matches any of the specified strings.
         /// </summary>        
         /// <param name="text">The string to compare to the substrings at its start.</param>
+        /// <param name="prefixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
+        /// <param name="values">The specified strings to compare to the start of <paramref name="text"/>.</param>
         /// <param name="ignoreCase"><see langword="true"/> to ignore case during the comparison; otherwise, <see langword="false"/>.</param>
         /// <param name="culture">
         /// Cultural information that determines how <paramref name="text"/> and other <see cref="string"/> are compared.
         /// If culture is null, the current culture is used.
         /// </param>
-        /// <param name="prefixIndex">The zero-based index of the first occurrence, if found; otherwise, -1.</param>
-        /// <param name="values">The specified strings to compare to the start of <paramref name="text"/>.</param>
         /// <returns>
         /// <see langword="true"/> if the start of <paramref name="text"/> matches any of the strings of <paramref name="values"/>; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool StartsWith(this string text, bool ignoreCase, CultureInfo culture, out int prefixIndex, IEnumerable<string> values)
+        public static bool StartsWith(this string text, out int prefixIndex, IEnumerable<string> values, bool ignoreCase, CultureInfo culture)
         {
             prefixIndex = values.FindIndex(s => text.StartsWith(s, ignoreCase, culture));
             return prefixIndex >= 0;

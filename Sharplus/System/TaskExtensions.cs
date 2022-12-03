@@ -1,4 +1,6 @@
-﻿namespace System.Threading.Tasks
+﻿using System.Collections.Generic;
+
+namespace System.Threading.Tasks
 {
     public static class TaskExtensions
     {
@@ -54,7 +56,7 @@
         /// An <see cref="Func{TResult, TNewResult}"/> to run when the task completes.
         /// </param>
         /// <returns>
-        /// A new continuation <see cref="Task{TNewResult}"/>.
+        /// A new continuation <see cref="Task"/> with the result of the function.
         /// </returns>
         public static async Task<TNewResult> ContinueWithResult<TResult, TNewResult>(this Task<TResult> task, Func<TResult, TNewResult> continuationFunction)
         {
@@ -66,16 +68,16 @@
         }
 
         /// <summary>
-        /// Create a continuation that receives an <see cref="Func{TResult, Task{TNewResult}}"/> and will be executed when the task has been executed.
+        /// Create a continuation that receives an <see cref="Func{TResult, Task}"/> and will be executed when the task has been executed.
         /// </summary>
         /// <param name="task">
         /// The <see cref="Task{TResult}"/> representing the pending operation.
         /// </param>
         /// <param name="continuationFunction">
-        /// An <see cref="Func{TResult, Task{TNewResult}}"/> to run when the task completes.
+        /// An <see cref="Func{TResult, Task}"/> to run when the task completes.
         /// </param>
         /// <returns>
-        /// A new continuation <see cref="Task{TNewResult}"/>.
+        /// A new continuation <see cref="Task"/> with the result of the function.
         /// </returns>
         public static async Task<TNewResult> ContinueWithResult<TResult, TNewResult>(this Task<TResult> task, Func<TResult, Task<TNewResult>> continuationFunction)
         {
@@ -86,6 +88,32 @@
                 return continuationFunction(task.Result);
             }).Unwrap();
         }
+
+        /// <summary>
+        /// Create a continuation that receives an <see cref="Func{TResult, IEnumerable}"/> and will be executed when the task has been executed.
+        /// </summary>
+        /// <param name="task">
+        /// The <see cref="Task"/> representing the pending operation.
+        /// </param>
+        /// <param name="continuationFunction">
+        /// An <see cref="Func{TResult, IEnumerable}"/> to run when the task completes.
+        /// </param>
+        /// <returns>
+        /// A new continuation <see cref="Task"/> with the result of the function.
+        /// </returns>
+        public static async Task<TNewResult[]> ContinueWithResult<TResult, TNewResult>(this Task<TResult> task, Func<TResult, IEnumerable<Task<TNewResult>>> continuationFunction)
+        {
+            return await task.ContinueWith(delegate (Task<TResult> t)
+            {
+                if (t.IsFaulted)
+                {
+                    throw t.Exception;
+                }
+
+                return Task.WhenAll(continuationFunction(task.Result));
+            }).Unwrap();
+        }
+
 
         /// <summary>
         /// Returns a completed task if task is null.

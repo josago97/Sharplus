@@ -76,6 +76,18 @@ namespace Sharplus.Tests.Linq
         }
 
         [Theory]
+        [InlineData(true, null)]
+        [InlineData(true, new int[] { })]
+        [InlineData(false, new int[] { 1 })]
+        [InlineData(false, new int[] { 1, 2, 3 })]
+        public void IsNullOrEmpty(bool expected, IEnumerable<int> collection)
+        {
+            bool result = collection.IsNullOrEmpty();
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
         [InlineData(true, new int[] { }, new long[] { }, true)]
         [InlineData(true, new int[] { 1 }, new long[] { 1 }, false)]
         [InlineData(false, new int[] { 1 }, new long[] { 1 }, true)]

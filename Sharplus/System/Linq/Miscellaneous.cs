@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Sharplus.System.Linq;
 
 namespace System.Linq
@@ -400,6 +401,35 @@ namespace System.Linq
         public static TSource GetRandom<TSource>(this IEnumerable<TSource> source)
         {
             return GetRandom(source, out int _);
+        }
+
+        #endregion
+
+        #region IsNullOrEmpty
+
+        /// <summary>
+        /// Indicates whether the specified collection is null or does not contain elements.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of source.</typeparam>
+        /// <param name="source">The collection to test.</param>
+        /// <returns>
+        /// <see langword="true"/> if the value parameter is null or an empty collection; otherwise, <see langword="false"/>.
+        /// </returns>
+        public static bool IsNullOrEmpty<TSource>(this IEnumerable<TSource> source)
+        {
+            bool result = source == null;
+
+            if (!result)
+            {
+                result = source switch
+                {
+                    TSource[] array => array.Length == 0,
+                    IList list => list.Count == 0,
+                    _ => source.Any()
+                };
+            }
+
+            return result;
         }
 
         #endregion

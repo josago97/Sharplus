@@ -19,6 +19,24 @@ namespace Sharplus.Tests.System
         }
 
         [Theory]
+        [InlineData(new int[] { 0, 1, 2 }, "hi", "", false)]
+        [InlineData(new int[] { 0, 1, 2 }, "hi", "", true)]
+        [InlineData(new int[] { }, "hello world", "HeLLo", false)]
+        [InlineData(new int[] { 0 }, "hello world", "hello", false)]
+        [InlineData(new int[] { 0 }, "hello world", "HeLLo", true)]
+        [InlineData(new int[] { }, "hello world", "L", false)]
+        [InlineData(new int[] { 2, 3, 9 }, "hello world", "l", false)]
+        [InlineData(new int[] { 2, 3, 9 }, "hello world", "L", true)]
+        [InlineData(new int[] { }, "test test test", "EST", false)]
+        [InlineData(new int[] { 1, 6, 11 }, "test test test", "est", false)]
+        [InlineData(new int[] { 1, 6, 11 }, "test test test", "EST", true)]
+        public void FindOcurrences(int[] expected, string text, string pattern, bool ignoreCase)
+        {
+            int[] result = text.FindOcurrences(pattern, ignoreCase);
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
         [InlineData("hello", "hello", "ñ")]
         [InlineData("a", "á", "")]
         [InlineData("añ", "añ", "ñ")]

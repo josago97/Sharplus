@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Sharplus.System;
 using Xunit;
@@ -67,6 +68,28 @@ namespace Sharplus.Tests
         public async void ContinueWithResultTaskWithException()
         {
             Task task = TaskWithoutException().ContinueWithResult((_) => TaskWithException());
+
+            await Assert.ThrowsAsync<Exception>(() => task);
+            Assert.Equal(TaskStatus.Faulted, task.Status);
+            Assert.NotNull(task.Exception);
+        }
+
+        [Fact]
+        public async void ContinueWithResultTaskIEnumarableWithoutException()
+        {
+            Task<int[]> task = TaskWithoutException()
+                .ContinueWithResult(_ => Enumerable.Range(0, 10).Select(_ => TaskWithoutException()));
+
+            int[] expected = await Task.WhenAll(Enumerable.Range(0, 10).Select(_ => TaskWithoutException()));
+
+            Assert.Equal(expected, await task);
+        }
+
+        [Fact]
+        public async void ContinueWithResultTaskIEnumarableWithException()
+        {
+            Task task = TaskWithoutException()
+                .ContinueWithResult(_ => Enumerable.Range(0, 10).Select(_ => TaskWithException()));
 
             await Assert.ThrowsAsync<Exception>(() => task);
             Assert.Equal(TaskStatus.Faulted, task.Status);
