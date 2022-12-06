@@ -410,12 +410,11 @@ namespace System.Linq
         /// <summary>
         /// Indicates whether the specified collection is null or does not contain elements.
         /// </summary>
-        /// <typeparam name="TSource">The type of the elements of source.</typeparam>
         /// <param name="source">The collection to test.</param>
         /// <returns>
         /// <see langword="true"/> if the value parameter is null or an empty collection; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool IsNullOrEmpty<TSource>(this IEnumerable<TSource> source)
+        public static bool IsNullOrEmpty(this IEnumerable source)
         {
             bool result = source == null;
 
@@ -423,9 +422,9 @@ namespace System.Linq
             {
                 result = source switch
                 {
-                    TSource[] array => array.Length == 0,
-                    IList list => list.Count == 0,
-                    _ => source.Any()
+                    string text => text.Length == 0,
+                    ICollection collection => collection.Count == 0,
+                    _ => !source.GetEnumerator().MoveNext(),
                 };
             }
 
