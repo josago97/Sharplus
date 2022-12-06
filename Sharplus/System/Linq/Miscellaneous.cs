@@ -416,19 +416,12 @@ namespace System.Linq
         /// </returns>
         public static bool IsNullOrEmpty(this IEnumerable source)
         {
-            bool result = source == null;
-
-            if (!result)
+            return source == null || source switch
             {
-                result = source switch
-                {
-                    string text => text.Length == 0,
-                    ICollection collection => collection.Count == 0,
-                    _ => !source.GetEnumerator().MoveNext(),
-                };
-            }
-
-            return result;
+                string text => text.Length == 0,
+                ICollection collection => collection.Count == 0,
+                _ => !source.GetEnumerator().MoveNext(),
+            };
         }
 
         #endregion
