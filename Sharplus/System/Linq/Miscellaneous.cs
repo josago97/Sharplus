@@ -1,12 +1,46 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Sharplus.System.Linq;
 
 namespace System.Linq
 {
     public static class Miscellaneous
     {
+        #region Batch
+
+        /// <summary>
+        /// Batches the source sequence into sized sequences.
+        /// </summary>
+        /// <typeparam name="TSource">Type of elements in <paramref name="source"/> sequence.</typeparam>
+        /// <param name="source">The source sequence.</param>
+        /// <param name="size">Size of buckets.</param>
+        /// <returns>A sequence of equally sized sequences containing elements of the source collection.</returns>
+        public static IEnumerable<IEnumerable<TSource>> Batch<TSource>(this IEnumerable<TSource> source, int size)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+            if (size < 0) throw Error.BadArguments("size cannot be negative");
+
+            List<TSource> batch = new List<TSource>(size);
+
+            if (size > 0)
+            {
+                foreach (var item in source)
+                {
+                    batch.Add(item);
+
+                    if (batch.Count == size)
+                    {
+                        yield return batch;
+                        batch.Clear();
+                    }
+                }
+
+                if (batch.Count > 0) yield return batch;
+            }
+        }
+
+        #endregion
+
         #region Concat
 
         /// <summary>
@@ -290,6 +324,7 @@ namespace System.Linq
         public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
         {
             if (source == null) throw Error.ArgumentNull("source");
+            if (action == null) throw Error.ArgumentNull("action");
 
             if (source is TSource[] array)
             {
@@ -426,6 +461,43 @@ namespace System.Linq
 
         #endregion
 
+        #region Repeat
+
+        /// <summary>
+        /// Repeats the sequence the specified number of times.
+        /// </summary>
+        /// <typeparam name="TSource">Type of elements in sequence.</typeparam>
+        /// <param name="source">The sequence to repeat.</param>
+        /// <param name="count">Number of times to repeat the sequence.</param>
+        /// <returns>A sequence produced from the repetition of the original source sequence.</returns>
+        public static IEnumerable<TSource> Repeat<TSource>(this IEnumerable<TSource> source, int count)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+
+            for (int i = 0; i < count; i++)
+            {
+                foreach (var item in source) yield return item;
+            }
+        }
+
+        /// <summary>
+        /// Repeats the sequence forever.
+        /// </summary>
+        /// <typeparam name="TSource">Type of elements in sequence.</typeparam>
+        /// <param name="source">The sequence to repeat.</param>
+        /// <returns>A sequence produced from the infinite repetition of the original source sequence.</returns>
+        public static IEnumerable<TSource> Repeat<TSource>(this IEnumerable<TSource> source)
+        {
+            if (source == null) throw Error.ArgumentNull("source");
+
+            while (true)
+            {
+                foreach (var item in source) yield return item;
+            }
+        }
+
+        #endregion
+
         #region SequenceEquals
 
         /// <summary>
@@ -452,7 +524,7 @@ namespace System.Linq
             bool moveNext1 = true;
             bool moveNext2 = true;
 
-            while (moveNext1 && moveNext2)
+            do
             {
                 moveNext1 = e1.MoveNext();
                 moveNext2 = e2.MoveNext();
@@ -460,9 +532,8 @@ namespace System.Linq
                 if (moveNext1 != moveNext2 || (moveNext1 && !equals(e1.Current, e2.Current)))
                 {
                     areEqual = false;
-                    break;
                 }
-            }
+            } while (moveNext1 && moveNext2 && areEqual);
 
             return areEqual;
         }

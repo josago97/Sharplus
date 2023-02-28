@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Sharplus.System;
+using Sharplus.Tasks;
 using Xunit;
 
 namespace Sharplus.Tests

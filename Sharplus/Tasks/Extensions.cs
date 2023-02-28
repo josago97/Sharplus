@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace System.Threading.Tasks
+namespace Sharplus.Tasks
 {
-    public static class TaskExtensions
+    public static class Extensions
     {
         /// <summary>
         /// Create a continuation that receives an <see cref="Action"/> and will be executed when the task has been executed.

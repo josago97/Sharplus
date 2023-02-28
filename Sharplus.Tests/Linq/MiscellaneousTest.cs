@@ -8,6 +8,18 @@ namespace Sharplus.Tests.Linq
 {
     public class MiscellaneousTest
     {
+        [Theory]
+        [InlineData(new int[] { 1, 2, 3, 4, 5 }, 0, new object[0])]
+        [InlineData(new int[] { 1, 2 }, 1, new object[] { new[] { 1 }, new[] { 2 } })]
+        [InlineData(new int[] { 1, 2, 3, 4, 5 }, 2, new object[] { new[] { 1, 2 }, new[] { 3, 4 }, new[] { 5 } })]
+        [InlineData(new int[] { 1, 2, 3, 4, 5 }, 3, new object[] { new[] { 1, 2, 3 }, new[] { 4, 5 } })]
+        [InlineData(new int[] { 1, 2, 3, 4, 5, 6 }, 3, new object[] { new[] { 1, 2, 3 }, new[] { 4, 5, 6 } })]
+        public void Batch(int[] sequence, int size, object[] expected)
+        {
+            var result = sequence.Batch(size);
+
+            Assert.Equal(expected, result);
+        }
 
         [Theory]
         [InlineData(new int[] { 1, 2 }, new int[] { 1, 2 })]
@@ -86,6 +98,17 @@ namespace Sharplus.Tests.Linq
         public void IsNullOrEmpty(bool expected, IEnumerable collection)
         {
             bool result = collection.IsNullOrEmpty();
+
+            Assert.Equal(expected, result);
+        }
+
+        [Theory]
+        [InlineData(new int[] { 1, 2 }, 0, new int[0])]
+        [InlineData(new int[] { 1, 2 }, 1, new int[] { 1, 2 })]
+        [InlineData(new int[] { 1, 2 }, 2, new int[] { 1, 2, 1, 2 })]
+        public void Repeat(int[] sequence, int size, int[] expected)
+        {
+            var result = sequence.Repeat(size);
 
             Assert.Equal(expected, result);
         }
