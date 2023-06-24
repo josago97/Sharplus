@@ -507,17 +507,17 @@ namespace System.Linq
         /// <typeparam name="TSecond">The type of the elements of the second sequence.</typeparam>
         /// <param name="first">The sequence to compare to the second sequence.</param>
         /// <param name="second">The sequence to compare to the first sequence.</param>
-        /// <param name="equals">A function to know if two elements are equal.</param>
+        /// <param name="equalsFunc">A function to know if two elements are equal.</param>
         /// <returns>
         /// <see langword="true"/> if both sequences contain the same elements; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool SequenceEquals<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, bool> equals)
+        public static bool SequenceEquals<TFirst, TSecond>(this IEnumerable<TFirst> first, IEnumerable<TSecond> second, Func<TFirst, TSecond, bool> equalsFunc)
         {
             if (first == null) throw Error.ArgumentNull("first");
             if (second == null) throw Error.ArgumentNull("second");
-            if (equals == null) throw Error.ArgumentNull("equals");
+            if (equalsFunc == null) throw Error.ArgumentNull("equalsFunc");
 
-            bool areEqual = true;
+            bool equals = true;
 
             using IEnumerator<TFirst> e1 = first.GetEnumerator();
             using IEnumerator<TSecond> e2 = second.GetEnumerator();
@@ -529,13 +529,13 @@ namespace System.Linq
                 moveNext1 = e1.MoveNext();
                 moveNext2 = e2.MoveNext();
 
-                if (moveNext1 != moveNext2 || (moveNext1 && !equals(e1.Current, e2.Current)))
+                if (moveNext1 != moveNext2 || (moveNext1 && !equalsFunc(e1.Current, e2.Current)))
                 {
-                    areEqual = false;
+                    equals = false;
                 }
-            } while (moveNext1 && moveNext2 && areEqual);
+            } while (moveNext1 && moveNext2 && equals);
 
-            return areEqual;
+            return equals;
         }
 
         #endregion

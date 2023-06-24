@@ -132,16 +132,16 @@ namespace System.Collections.Generic
 
         private class Enumerator : IEnumerator<T>
         {
-            private CircularArray<T> _pipe;
+            private CircularArray<T> _circularArray;
             private int _index;
 
             public T Current { get; private set; }
 
             object IEnumerator.Current => Current;
 
-            public Enumerator(CircularArray<T> pipe)
+            public Enumerator(CircularArray<T> circularArray)
             {
-                _pipe = pipe;
+                _circularArray = circularArray;
                 Reset();
             }
 
@@ -151,16 +151,16 @@ namespace System.Collections.Generic
 
             public bool MoveNext()
             {
-                if (_index < _pipe.Length)
+                bool hasNext = false;
+
+                if (_index < _circularArray.Length)
                 {
-                    Current = _pipe._items[_pipe.GetLocalIndex(_index)];
+                    Current = _circularArray._items[_circularArray.GetLocalIndex(_index)];
                     _index++;
-                    return true;
+                    hasNext = true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                return hasNext;
             }
 
             public void Reset()

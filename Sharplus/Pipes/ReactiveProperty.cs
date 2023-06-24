@@ -50,18 +50,18 @@ namespace Sharplus.Pipes
 
         private bool Equals(T value1, T value2)
         {
-            bool res;
+            bool result;
 
             if (value1 == null)
             {
-                res = value2 == null;
+                result = value2 == null;
             }
             else
             {
-                res = value1.Equals(value2);
+                result = value1.Equals(value2);
             }
 
-            return res;
+            return result;
         }
     }
 }
