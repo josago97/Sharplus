@@ -118,8 +118,7 @@ Included without "using".
 
 #### Statistics
 
-- AllMax
-<br>
+- AllMax <br>
 Returns all maximum values in a generic sequence.
 
 ```cs
@@ -129,8 +128,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 4};
 IEnumerable<int> max = numbers.AllMax();
 ```
 
-- AllMin
-<br>
+- AllMin <br>
 Returns all minimum values in a generic sequence.
 
 ```cs
@@ -140,8 +138,7 @@ int[] numbers = new int[] {1, 1, 2, 3, 4};
 IEnumerable<int> min = numbers.AllMin();
 ```
 
-- Median
-<br>
+- Median <br>
 Computes the median of a sequence
 
 ```cs
@@ -151,8 +148,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 5};
 double median = numbers.Median();
 ```
 
-- Kurtosis
-<br>
+- Kurtosis <br>
 Computes the kurtosis of a sequence
 
 ```cs
@@ -162,8 +158,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 5};
 double kurtosis = numbers.Kurtosis();
 ```
 
-- Mode
-<br>
+- Mode <br>
 The most repeated element in the sequence.
 
 ```cs
@@ -173,8 +168,7 @@ int[] numbers = new int[] {1, 2, 3, 3, 4, 5};
 int mode = numbers.Mode(out int times);
 ```
 
-- Mode
-<br>
+- Mode <br>
 The most repeated element in the sequence.
 
 ```cs
@@ -184,8 +178,7 @@ int[] numbers = new int[] {1, 2, 3, 3, 4, 5};
 int mode = numbers.Mode(out int times);
 ```
 
-- Skewness
-<br>
+- Skewness <br>
 Computes the skewness of a sequence
 
 ```cs
@@ -195,8 +188,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 4, 5};
 double skewness = numbers.Skewness();
 ```
 
-- Standard deviation
-<br>
+- Standard deviation <br>
 Computes the standard deviation of a sequence
 
 ```cs
@@ -206,8 +198,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 4, 5};
 double standardDeviation = numbers.StandardDeviation();
 ```
 
-- Variance
-<br>
+- Variance <br>
 Computes the variance of a sequence
 
 ```cs
@@ -219,8 +210,7 @@ double variance = numbers.Variance();
 
 #### Other
 
-- Batch
-<br>
+- Batch <br>
 Batches the source sequence into sized sequences
 
 ```cs
@@ -230,8 +220,7 @@ int[] numbers = new int[] {1, 2, 3, 4};
 IEnumerable<IEnumerable<int>> sequences = numbers.Batch(2);
 ```
 
-- Concat
-<br>
+- Concat <br>
 Concatenates sequences
 
 ```cs
@@ -243,8 +232,7 @@ int[] numbers3 = new int[] {5, 6};
 IEnumerable<int> sequence = numbers.Concat(numbers2, numbers3);
 ```
 
-- Dump
-<br>
+- Dump <br>
 Shows the content of the sequence in a `string`.
 
 ```cs
@@ -254,8 +242,7 @@ int[] numbers = new int[] {1, 2, 3};
 Console.WriteLine(numbers.Dump());
 ```
 
-- FindAllIndexes
-<br>
+- FindAllIndexes <br>
 Searches for all elements that matches the conditions defined by the specified predicate, and returns the zero-based index of the all occurrences within the range of elements in these sequence that extends from the specified index to the last element.
 
 ```cs
@@ -265,8 +252,7 @@ int[] numbers = new int[] {1, 2, 3, 4, 5};
 IEnumerable<int> indexes = numbers.FindAllIndexes(2, x => x > 0);
 ```
 
-- FindIndex
-<br>
+- FindIndex <br>
 Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence within the range of elements in the sequence that starts at the specified index and contains the specified number of elements.
 
 ```cs
