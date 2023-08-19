@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sharplus.Pipes;
+using Sharplus.Pipelines;
 using Xunit;
 
 namespace Sharplus.Tests.Reactive

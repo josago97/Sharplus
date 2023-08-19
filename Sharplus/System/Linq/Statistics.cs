@@ -257,16 +257,20 @@ namespace System.Linq
         {
             if (values.Length == 0) throw Error.NoElements();
 
+            double result;
+
             if (values.Length % 2 == 0)
             {
                 double left = values[values.Length / 2 - 1];
                 double right = values[values.Length / 2];
-                return (left + right) / 2;
+                result = (left + right) / 2;
             }
             else
             {
-                return values[values.Length / 2];
+                result = values[values.Length / 2];
             }
+
+            return result;
         }
 
         #endregion

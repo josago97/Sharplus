@@ -28,6 +28,6 @@ namespace Sharplus.SequenceMatching
         /// <returns>
         /// The distance between the two sequences.
         /// </returns>
-        public double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2) => Distance(sequence1, sequence2, EqualityComparer<T, G>.Default);
+        public double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2);
     }
 }

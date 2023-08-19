@@ -24,7 +24,7 @@ namespace System.Linq
 
             if (size > 0)
             {
-                foreach (var item in source)
+                foreach (TSource item in source)
                 {
                     batch.Add(item);
 

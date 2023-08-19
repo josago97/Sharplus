@@ -108,9 +108,7 @@ namespace Sharplus.Tasks
             return await task.ContinueWith(delegate (Task<TResult> t)
             {
                 if (t.IsFaulted)
-                {
                     throw t.Exception;
-                }
 
                 return Task.WhenAll(continuationFunction(task.Result));
             }).Unwrap();

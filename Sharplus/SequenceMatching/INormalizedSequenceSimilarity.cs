@@ -28,6 +28,6 @@ namespace Sharplus.SequenceMatching
         /// <returns>
         /// The similarity between the two sequences.
         /// </returns>
-        public double Similarity<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2) => Similarity(sequence1, sequence2, EqualityComparer<T, G>.Default);
+        public double Similarity<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2);
     }
 }

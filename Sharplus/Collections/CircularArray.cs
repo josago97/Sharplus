@@ -1,50 +1,55 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace System.Collections.Generic
+namespace Sharplus.Collections
 {
-    public class CircularArray<T> : IEnumerable<T>
+    public class CircularArray<T> : IList<T>, IReadOnlyList<T>
     {
         private T[] _items;
         private int _firstPosition;
         private int _nextFreePosition;
         private int _size;
+        private IEqualityComparer<T> _comparer;
 
         public int Length => _size;
         public int Capacity => _items.Length;
+        public int Count => Length;
+        public bool IsReadOnly => false;
 
         public T this[int index]
         {
             get
             {
                 if (index >= _size)
-                {
                     throw new ArgumentOutOfRangeException();
-                }
 
-                return _items[GetLocalIndex(index)];
+                return _items[ToLocalIndex(index)];
             }
 
             set
             {
                 if (index >= _size)
-                {
                     throw new ArgumentOutOfRangeException();
-                }
 
-                _items[GetLocalIndex(index)] = value;
+                _items[ToLocalIndex(index)] = value;
             }
         }
 
-        public CircularArray(int capacity)
+        private CircularArray()
         {
             Clear();
+            _comparer = EqualityComparer<T>.Default;
+        }
+
+        public CircularArray(int capacity) : this()
+        {
             _items = new T[capacity];
         }
 
-        public CircularArray(IEnumerable<T> collection)
+        public CircularArray(IEnumerable<T> collection) : this()
         {
-            Clear();
             _items = collection.ToArray();
             _size = _items.Length;
         }
@@ -55,43 +60,102 @@ namespace System.Collections.Generic
 
             _nextFreePosition++;
 
-            if (_nextFreePosition == _items.Length) _nextFreePosition = 0;
+            if (_nextFreePosition == _items.Length)
+                _nextFreePosition = 0;
 
-            if (_size < _items.Length) _size++;
+            if (_size < _items.Length)
+                _size++;
             else
             {
                 _firstPosition++;
-                if (_firstPosition == _items.Length) _firstPosition = 0;
+
+                if (_firstPosition == _items.Length)
+                    _firstPosition = 0;
             }
         }
 
         public void AddRange(IEnumerable<T> collection)
         {
             foreach (T item in collection)
-            {
                 Add(item);
-            }
         }
 
         public bool Contains(T item)
         {
-            return _items.Contains(item);
+            return IndexOf(item) >= 0;
+        }
+
+        public int IndexOf(T item)
+        {
+            int result = -1;
+
+            for (int i = 0; i < _size; i++)
+            {
+                if (_comparer.Equals(item, this[i]))
+                {
+                    result = i;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
+        public void Insert(int index, T item)
+        {
+            if (index < 0 || index >= _size)
+                throw new ArgumentOutOfRangeException();
+
+            if (_size < _items.Length)
+                _size++;
+
+            // Make space
+            for (int i = _size - 1; i > index; i--)
+                this[i] = this[i - 1];
+
+            // Store item
+            this[index] = item;
+        }
+
+        public void RemoveAt(int index)
+        {
+            if (index < 0 || index >= _size)
+                throw new ArgumentOutOfRangeException();
+
+            for (int i = index; i < _size - 1; i++)
+                this[i] = this[i + 1];
+
+            _nextFreePosition--;
+            if (_nextFreePosition < 0)
+                _nextFreePosition = _items.Length - 1;
+
+            _size--;
+        }
+
+        public bool Remove(T item)
+        {
+            bool result = false;
+            int index = IndexOf(item);
+
+            if (index != -1)
+            {
+                RemoveAt(index);
+                result = true;
+            }
+
+            return result;
         }
 
         public void CopyTo(Array array, int arrayIndex)
         {
             for (int i = 0; i < _size; i++)
-            {
                 array.SetValue(this[i], arrayIndex + i);
-            }
         }
 
         public void CopyTo(T[] array, int arrayIndex)
         {
             for (int i = 0; i < _size; i++)
-            {
                 array[arrayIndex + i] = this[i];
-            }
         }
 
         public void Clear()
@@ -99,15 +163,6 @@ namespace System.Collections.Generic
             _firstPosition = 0;
             _nextFreePosition = 0;
             _size = 0;
-        }
-
-        public T[] ToArray()
-        {
-            T[] result = new T[_size];
-
-            CopyTo(result, 0);
-
-            return result;
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -120,12 +175,15 @@ namespace System.Collections.Generic
             return GetEnumerator();
         }
 
-        private int GetLocalIndex(int index)
+        private int ToLocalIndex(int index)
         {
-            if (index >= Length) throw new IndexOutOfRangeException();
+            if (index >= _size)
+                throw new IndexOutOfRangeException();
 
             int localIndex = _firstPosition + index;
-            if (localIndex >= Length) localIndex -= Length;
+
+            if (localIndex >= _items.Length)
+                localIndex -= _items.Length;
 
             return localIndex;
         }
@@ -145,9 +203,7 @@ namespace System.Collections.Generic
                 Reset();
             }
 
-            public void Dispose()
-            {
-            }
+            public void Dispose() { }
 
             public bool MoveNext()
             {
@@ -155,7 +211,7 @@ namespace System.Collections.Generic
 
                 if (_index < _circularArray.Length)
                 {
-                    Current = _circularArray._items[_circularArray.GetLocalIndex(_index)];
+                    Current = _circularArray[_index];
                     _index++;
                     hasNext = true;
                 }

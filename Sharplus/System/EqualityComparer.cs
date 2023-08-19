@@ -37,8 +37,7 @@ namespace System
 
         public new bool Equals(object x, object y)
         {
-            if (x is T t && y is G g) return _equals(t, g);
-            else return false;
+            return x is T t && y is G g ? _equals(t, g) : false;
         }
 
         public int GetHashCode(object obj)

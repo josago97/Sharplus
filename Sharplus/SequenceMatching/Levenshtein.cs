@@ -4,14 +4,19 @@ using System.Linq;
 
 namespace Sharplus.SequenceMatching
 {
-    public class Levenshtein : ISequenceDistance
+    public class Levenshtein : ISequenceMetricDistance
     {
-        public double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2, IEqualityComparer<T, G> comparer)
+        public virtual double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2, IEqualityComparer<T, G> comparer)
         {
             return Calculate(sequence1.ToArray(), sequence2.ToArray(), comparer);
         }
 
-        private double Calculate<T, G>(T[] sequence1, G[] sequence2, IEqualityComparer<T, G> comparer)
+        public double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2)
+        {
+            return Distance(sequence1, sequence2, EqualityComparer<T, G>.Default);
+        }
+
+        protected double Calculate<T, G>(T[] sequence1, G[] sequence2, IEqualityComparer<T, G> comparer)
         {
             int[,] h = new int[sequence1.Length + 1, sequence2.Length + 1];
 

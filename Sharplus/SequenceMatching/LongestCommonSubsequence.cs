@@ -35,5 +35,10 @@ namespace Sharplus.SequenceMatching
 
             return length1 + length2 - 2 * d[length1, length2];
         }
+
+        public double Distance<T, G>(IEnumerable<T> sequence1, IEnumerable<G> sequence2)
+        {
+            return Distance(sequence1, sequence2, EqualityComparer<T, G>.Default);
+        }
     }
 }
