@@ -6,6 +6,8 @@ namespace Sharplus.Tasks
 {
     public static class Extensions
     {
+        #region ContinueWithResult
+
         /// <summary>
         /// Create a continuation that receives an <see cref="Action"/> and will be executed when the task has been executed.
         /// </summary>
@@ -114,6 +116,9 @@ namespace Sharplus.Tasks
             }).Unwrap();
         }
 
+        #endregion
+
+        #region ForAwait
 
         /// <summary>
         /// Returns a completed task if task is null.
@@ -139,5 +144,7 @@ namespace Sharplus.Tasks
         {
             return task ?? Task.FromResult(defaultValue);
         }
+
+        #endregion
     }
 }

@@ -13,16 +13,18 @@ namespace System
         /// </returns>
         public static Stream Duplicate(this Stream stream)
         {
-            stream.Position = 0;
             MemoryStream copy = new MemoryStream();
+            long streamPosition = stream.Position;
+            stream.Position = 0;
             stream.CopyTo(copy);
             copy.Position = 0;
-            stream.Position = 0;
+            stream.Position = streamPosition;
+
             return copy;
         }
 
         /// <summary>
-        /// Writes the stream contents to a byte array, regardless of the <see cref="Stream"/>.Position property.
+        /// Writes the stream contents to a byte array, regardless of the <see cref="Stream"/>.
         /// </summary>
         /// <param name="stream">The stream to read.</param>
         /// <returns>
