@@ -1,4 +1,6 @@
-﻿namespace System
+﻿using System;
+
+namespace Sharplus.System
 {
     public static class ArrayExtensions
     {

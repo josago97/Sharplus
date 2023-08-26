@@ -500,7 +500,7 @@ namespace System
         /// <param name="inferredValue">The inferred value.</param>
         /// <returns>
         /// The relative error between two values.
-        /// </returns
+        /// </returns>
         public static double RelativeError(double realValue, double inferredValue)
         {
             return AbsoluteError(realValue, inferredValue) / realValue;
@@ -513,7 +513,7 @@ namespace System
         /// <param name="inferredValue">The inferred value.</param>
         /// <returns>
         /// The relative error between two values.
-        /// </returns
+        /// </returns>
         public static decimal RelativeError(decimal realValue, decimal inferredValue)
         {
             return AbsoluteError(realValue, inferredValue) / realValue;

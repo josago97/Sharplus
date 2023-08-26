@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Sharplus.System.Linq;
 using Xunit;
 
 namespace Sharplus.Tests.Linq

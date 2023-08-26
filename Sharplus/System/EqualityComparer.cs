@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
-namespace System
+namespace Sharplus.System
 {
     public interface IEqualityComparer<T, G> : IEqualityComparer
     {

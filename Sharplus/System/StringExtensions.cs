@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Sharplus.System.Linq;
 
-namespace System
+namespace Sharplus.System
 {
     public static class StringExtensions
     {
@@ -75,7 +77,7 @@ namespace System
         /// <returns>
         /// The indices of where each found occurrence starts.
         /// </returns>
-        public static int[] FindOcurrences(this string text, string pattern, bool ignoreCase)
+        public static int[] FindOcurrences(this string text, string pattern, bool ignoreCase = false)
         {
             Regex regex;
 

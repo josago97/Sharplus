@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using Sharplus.System.Linq;
+using System.Linq;
 
-namespace System.Linq
+namespace Sharplus.System.Linq
 {
     public static class Miscellaneous
     {
@@ -475,9 +476,8 @@ namespace System.Linq
             if (source == null) throw Error.ArgumentNull("source");
 
             for (int i = 0; i < count; i++)
-            {
-                foreach (var item in source) yield return item;
-            }
+                foreach (TSource item in source) 
+                    yield return item;
         }
 
         /// <summary>
@@ -627,22 +627,15 @@ namespace System.Linq
             foreach (TSource item in first)
             {
                 if (!second.Contains(item, comparer))
-                {
                     yield return item;
-                }
                 else
-                {
                     elementsInBoth.Add(item);
-                }
             }
 
             foreach (TSource item in second)
-            {
                 if (!elementsInBoth.Contains(item, comparer))
-                {
                     yield return item;
-                }
-            }
+
         }
 
         /// <summary>

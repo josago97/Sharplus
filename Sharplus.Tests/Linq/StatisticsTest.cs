@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using Sharplus.System.Linq;
 using Xunit;
 
 namespace Sharplus.Tests.Linq

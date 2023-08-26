@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Sharplus.Collections;
+using Sharplus.System.Linq;
 using Xunit;
 
 namespace Sharplus.Tests.Collections
