@@ -12,7 +12,7 @@
 // Create a CircularArray with a capacity of 3
 CircularArray<int> circularArray = new CircularArray<int>(3);
 
-for(int i = 0; i < 5; i++)
+for (int i = 0; i < 5; i++)
     circularArray.Add(i);
 
 // Prints [2, 3, 4]
