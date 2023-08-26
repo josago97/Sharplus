@@ -118,6 +118,16 @@ namespace Sharplus.Tests
         }
 
         [Fact]
+        public void RunSyncWithDeadlock()
+        {
+            TaskUtils.RunSync(async () =>
+            {
+                TaskUtils.RunSync(() => Task.Delay(1000));
+                await Task.Delay(10000);
+            });
+        }
+
+        [Fact]
         public void RunSyncWithoutException()
         {
             TaskUtils.RunSync(TaskWithoutException);
@@ -140,8 +150,6 @@ namespace Sharplus.Tests
         {
             await Task.Yield();
             throw new Exception();
-
-            return 0;
         }
     }
 }

@@ -696,13 +696,27 @@ int number = await task.ForAwait(10);
 ```
 
 ### Utils
-// TODO terminar y revisar
+
 - RunSync<br>
-Executes an async Task method synchronously.
+Executes an async Task method synchronously. **Use it only in very necessary cases, it can cause deadlocks**
 
 ```cs
-Task task = null;
-await task.ForAwait();
+TaskUtils.RunSync(() => Task.Delay(1000));
 ```
 
 ## SharpUtils
+
+- Swap<br>
+Executes an async Task method synchronously.
+
+```cs
+int number1 = 0;
+int number2 = 1;
+
+SharpUtils.SwapReferences(ref number1, ref number2);
+
+// Prints 1
+Console.WriteLine(number1);
+// Prints 0
+Console.WriteLine(number2);
+```

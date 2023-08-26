@@ -7,7 +7,8 @@ namespace Sharplus.Tasks
     public static class TaskUtils
     {
         /// <summary>
-        /// Executes an async <see cref="Task"/> method synchronously
+        /// Executes an async <see cref="Task"/> method synchronously.
+        /// Use it only in very necessary cases, it can cause deadlocks.
         /// </summary>
         /// <param name="task">
         /// <see cref="Task"/> method to execute
@@ -18,7 +19,8 @@ namespace Sharplus.Tasks
         }
 
         /// <summary>
-        /// Executes an async <see cref="Task{T}"/> method synchronously
+        /// Executes an async <see cref="Task{T}"/> method synchronously.
+        /// Use it only in very necessary cases, it can cause deadlocks.
         /// </summary>
         /// <param name="task">
         /// <see cref="Task{T}"/> method to execute
