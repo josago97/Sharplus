@@ -707,7 +707,7 @@ TaskUtils.RunSync(() => Task.Delay(1000));
 ## SharpUtils
 
 - Swap<br>
-Executes an async Task method synchronously.
+Swaps references between two objects.
 
 ```cs
 int number1 = 0;
