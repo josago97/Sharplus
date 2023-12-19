@@ -361,7 +361,7 @@ IEnumerable<int> result = numbers.SymmetricExcept();
 ```
 
 - Swap <br>
-Swaps the positions of two elements in a list.
+Swaps the positions of two elements in a sequence.
 
 ```cs
 int[] numbers = new int[] { 1, 2, 3 };
